@@ -5,10 +5,10 @@
 #define COLOR_GREEN "\x1b[32m"
 #define COLOR_BLUE "\x1b[34m"
 #define COLOR_RESET "\x1b[0m"
-#define db_host "sql.freedb.tech"
-#define db_user "freedb_ngocban"
-#define db_pass "%UcZ5KGM!nv6g%m"
-#define db_name "freedb_network"
+#define db_host "localhost"
+#define db_user "root"
+#define db_pass "vuong2001"
+#define db_name "network"
 
 int validate_login(char *email, char *password);
 void login_page();

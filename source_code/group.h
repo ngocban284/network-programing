@@ -20,10 +20,10 @@
 #include <errno.h>
 #include "user.h"
 
-#define db_host "sql.freedb.tech"
-#define db_user "freedb_ngocban"
-#define db_pass "%UcZ5KGM!nv6g%m"
-#define db_name "freedb_network"
+#define db_host "localhost"
+#define db_user "root"
+#define db_pass "vuong2001"
+#define db_name "network"
 
 int access_group(char *groupID, char *userID);
 int access_share_group(char *groupID, char *userID);

@@ -19,12 +19,12 @@
 #include <dirent.h>
 #include <errno.h>
 #include "user.h"
-#define db_host "sql.freedb.tech"
-#define db_user "freedb_ngocban"
-#define db_pass "%UcZ5KGM!nv6g%m"
-#define db_name "freedb_network"
+#define db_host "localhost"
+#define db_user "root"
+#define db_pass "vuong2001"
+#define db_name "network"
 char *show_all_user(char *temp);
 char *show_profile(char *userID, char *temp);
-char *list_member(char *groupID, char *temp);
-char *list_folder(char *groupID, char *temp);
-char *list_file(char *groupID, char *temp);
+char *list_member(char* userID, char *groupID, char *temp);
+char *list_folder(char *userID, char *groupID, char *temp);
+char *list_file(char *userID, char *groupID, char *temp);

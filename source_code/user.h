@@ -19,10 +19,10 @@
 #include <dirent.h> 
 #include <errno.h>
 
-#define db_host "sql.freedb.tech"
-#define db_user "freedb_ngocban"
-#define db_pass "%UcZ5KGM!nv6g%m"
-#define db_name "freedb_network"
+#define db_host "localhost"
+#define db_user "root"
+#define db_pass "vuong2001"
+#define db_name "network"
 #define SIZE 1024
 //done
 char *get_folderid_via_foldername(MYSQL *con, char *foldername);

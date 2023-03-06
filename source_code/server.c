@@ -75,10 +75,12 @@ void *connection_handler(void *client_socket)
                     printf("------------List folder --------------\n");
                     char *code = strtok(client_message, "*");
                     char *groupID = strtok(NULL, "*");
+                    char *userID = strtok(NULL, "*");
                     char temp[1024] = "";
                     printf("code : %s\n", code);
                     printf("groupID : %s\n", groupID);
-                    char *status = list_folder(groupID, temp);
+                    printf("userID : %s\n", userID);
+                    char *status = list_folder(userID, groupID, temp);
                     printf("status : %s\n", status);
                     if (strcmp(temp, "0") == 0)
                     {
@@ -95,10 +97,12 @@ void *connection_handler(void *client_socket)
                     printf("------------List file --------------\n");
                     char *code = strtok(client_message, "*");
                     char *groupID = strtok(NULL, "*");
+                    char *userID = strtok(NULL, "*");
                     char temp[1024] = "";
                     printf("code : %s\n", code);
                     printf("groupID : %s\n", groupID);
-                    char *status = list_file(groupID, temp);
+                    printf("userID : %s\n", userID);
+                    char *status = list_file(userID, groupID, temp);
                     printf("status : %s, %ld\n", status, strlen(status));
                     if (strcmp(status, "0") == 0)
                     {
@@ -317,10 +321,13 @@ void *connection_handler(void *client_socket)
                     printf("------------List member --------------\n");
                     char *code = strtok(client_message, "*");
                     char *groupID = strtok(NULL, "*");
-                    char temp[1024] = "";
+                    char *userID = strtok(NULL, "*");
+                    char *temp = (char*)malloc(1024*sizeof(char));
+                    strcpy(temp, "");
                     printf("code : %s\n", code);
                     printf("groupID : %s\n", groupID);
-                    char *status = list_member(groupID, temp);
+                    printf("userID : %s\n", userID);
+                    char *status = list_member(userID, groupID, temp);
                     printf("status : %s\n", status);
                     if (strcmp(temp, "0") == 0)
                     {

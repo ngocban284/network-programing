@@ -6,7 +6,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <unistd.h>
-//#define SERVER_ADDR "192.168.37.135"
+// #define SERVER_ADDR "192.168.37.135"
 #define SERVER_ADDR "127.0.0.1"
 
 #define BUFF_SIZE 4096
@@ -44,7 +44,7 @@ int main(int argc, const char *argv[])
 {
     // create a socket
     int network_socket;
-    if( argc < 2)
+    if (argc < 2)
     {
         printf("Enter port pleaseeeee \n");
     }
@@ -74,7 +74,7 @@ int main(int argc, const char *argv[])
             char email[255] = {0};
             char password[255] = {0};
             login_page();
-            printf(COLOR_GREEN"Enter your choice : "COLOR_RESET);
+            printf(COLOR_GREEN "Enter your choice : " COLOR_RESET);
             scanf("%d", &choice);
             getchar();
             switch (choice)
@@ -89,10 +89,10 @@ int main(int argc, const char *argv[])
                 int read_len;
                 char mes_rev[255] = {0};
                 char *userID;
-                printf(COLOR_GREEN"\nEnter Email\t\t: "COLOR_RESET);
+                printf(COLOR_GREEN "\nEnter Email\t\t: " COLOR_RESET);
                 scanf("%s", email);
                 int validate_login(char *email, char *password);
-                printf(COLOR_GREEN"\nEnter Password\t\t: "COLOR_RESET);
+                printf(COLOR_GREEN "\nEnter Password\t\t: " COLOR_RESET);
                 scanf("%s", password);
                 char message[BUFF_SIZE] = "";
                 // char sign_in_code[10] = "0";
@@ -126,7 +126,7 @@ int main(int argc, const char *argv[])
                     {
 
                         home_page();
-                        printf(COLOR_GREEN"\nYour choice: "COLOR_RESET);
+                        printf(COLOR_GREEN "\nYour choice: " COLOR_RESET);
                         scanf("%d", &choose);
                         getchar();
                         switch (choose)
@@ -153,7 +153,7 @@ int main(int argc, const char *argv[])
                             printf("\t\tUserName : \t%s\n", userName);
                             printf("\t\tEmail    : \t%s\n\n", email);
                             printf(COLOR_BLUE "_________________________________________________________________\n" COLOR_RESET);
-                            
+
                             break;
                         }
                         case 2:
@@ -168,7 +168,7 @@ int main(int argc, const char *argv[])
                             memset(mes_send_showall, '\0', (strlen(mes_send_showall) + 1));
                             read_len = recv(network_socket, mes_recv_showall, sizeof(mes_recv_showall), 0);
                             mes_recv_showall[read_len] = '\0';
-                            //printf("%s",mes_recv_showall);
+                            // printf("%s",mes_recv_showall);
                             if (strcmp(mes_recv_showall, "0") == 0)
                             {
                                 printf(COLOR_RED "Have no one\n" COLOR_RESET);
@@ -187,7 +187,7 @@ int main(int argc, const char *argv[])
                                 {
                                     j++;
                                     p = strtok(NULL, "*");
-                                    //printf("%s",p);
+                                    // printf("%s",p);
                                     if (p == NULL)
                                     {
                                         break;
@@ -203,7 +203,7 @@ int main(int argc, const char *argv[])
                                     printf("%-11d| %-26s | %-21s | %-3s \n", k + 1, &userlist[i][255], &userlist[i + 1][255], &userlist[i + 2][255]);
                                     k++;
                                 }
-                                printf(COLOR_BLUE"__________________________________________________________________________\n\n" COLOR_RESET);
+                                printf(COLOR_BLUE "__________________________________________________________________________\n\n" COLOR_RESET);
                                 break;
                             }
                             break;
@@ -256,7 +256,7 @@ int main(int argc, const char *argv[])
                                     printf("%-11d| %-26s | %-21s | %-3s \n", k + 1, &listGroup[i][255], &listGroup[i + 1][255], &listGroup[i + 2][255]);
                                     k++;
                                 }
-                                printf(COLOR_BLUE"____________________________________________________________________\n\n" COLOR_RESET);
+                                printf(COLOR_BLUE "____________________________________________________________________\n\n" COLOR_RESET);
                                 char input[2];
                                 printf("Do you want to access the group, enter y(or Y)/ NO(enter any key) :");
                                 scanf("%[^\n]", input);
@@ -293,7 +293,7 @@ int main(int argc, const char *argv[])
 
                                             admin_page();
 
-                                            printf(COLOR_GREEN"Your choose : "COLOR_RESET);
+                                            printf(COLOR_GREEN "Your choose : " COLOR_RESET);
                                             scanf("%d", &choose1);
                                             getchar();
                                             switch (choose1)
@@ -306,11 +306,12 @@ int main(int argc, const char *argv[])
                                                 strcpy(mes_send_list_member, LIST_MEMBER);
                                                 strcat(mes_send_list_member, "*");
                                                 strcat(mes_send_list_member, groupID);
+                                                strcat(mes_send_list_member, "*");
+                                                strcat(mes_send_list_member, constUserID);
                                                 send(network_socket, mes_send_list_member, sizeof(mes_send_list_member), 0);
                                                 memset(mes_send_group_id, '\0', (strlen(mes_send_group_id) + 1));
                                                 read_len = recv(network_socket, mes_recv_list_member, sizeof(mes_recv_list_member), 0);
                                                 mes_recv_list_member[read_len] = '\0';
-                                                // printf("chekc tring : %s\n", mes_recv_list_member);
                                                 if (strcmp(mes_recv_list_member, "0") == 0)
                                                 {
                                                     printf(COLOR_RED "Doesnt have member\n" COLOR_RESET);
@@ -320,44 +321,36 @@ int main(int argc, const char *argv[])
                                                     // do nothing
                                                     strtok(mes_recv_list_member, "*");
                                                     char *length1 = strtok(NULL, "*");
+
                                                     int length = atoi(length1);
-                                                    char listMember[length][255];
+
+                                                    char listMember[255][255];
                                                     char *p;
                                                     int j = 0;
                                                     p = strtok(NULL, "*");
-                                                    strcpy(&listMember[j][255], p);
-                                                    // printf("list[0] : %s\n", &listMember[j][255]);
                                                     while (p != NULL)
                                                     {
+                                                        strcpy(&listMember[j][255], p);
                                                         j++;
                                                         p = strtok(NULL, "*");
-                                                        //  printf(" p : %s\n", p);
-                                                        if (p == NULL)
-                                                        {
-                                                            break;
-                                                        }
-                                                        else
-                                                        {
-                                                            strcpy(&(listMember[j][255]), p);
-                                                        }
                                                     }
-                                                    printf(COLOR_BLUE "________________________________LIST MEMBER________________________________\n" COLOR_RESET);
+                                                    printf(COLOR_BLUE "_________________________________________________________LIST MEMBER_________________________________________________________\n" COLOR_RESET);
                                                     // printf("\nSTT\t| User ID\t\t| UserName\t\t| Role\n");
-                                                    printf("%-11s| %-15s| %-18s| %-3s \n", "STT", "UserID", "UserName", "Role");
-                                                    printf(COLOR_BLUE "___________________________________________________________________________\n" COLOR_RESET);
+                                                    printf("%-11s| %-15s| %-18s| %-30s| %-3s \n", "STT", "UserID", "UserName", "Email", "Role");
+                                                    printf(COLOR_BLUE "______________________________________________________________________________________________________________________________\n" COLOR_RESET);
 
                                                     int k = 0;
 
-                                                    for (int i = 0; i < (length * 2); i += 2)
+                                                    for (int i = 0; i < (length * 3); i += 3)
                                                     {
                                                         if (strcmp(constUserID, &(listMember[i][255])) == 0)
                                                         {
-                                                            printf("%-11d| %-15s| %-18s| %-3s \n", k + 1, &listMember[i][255], &listMember[i + 1][255], "Admin");
+                                                            printf("%-11d| %-15s| %-18s| %-30s| %-3s \n", k + 1, &listMember[i][255], &listMember[i + 1][255], &listMember[i + 2][255], "Admin");
                                                             k++;
                                                         }
                                                         else
                                                         {
-                                                            printf("%-11d| %-15s| %-18s| %-3s \n", k + 1, &listMember[i][255], &listMember[i + 1][255], "Member");
+                                                            printf("%-11d| %-15s| %-18s| %-30s| %-3s \n", k + 1, &listMember[i][255], &listMember[i + 1][255], &listMember[i + 2][255], "Member");
                                                             k++;
                                                         }
                                                     }
@@ -374,6 +367,8 @@ int main(int argc, const char *argv[])
                                                 strcpy(mes_send_list_folder, LIST_FOLDER);
                                                 strcat(mes_send_list_folder, "*");
                                                 strcat(mes_send_list_folder, groupID);
+                                                strcat(mes_send_list_folder, "*");
+                                                strcat(mes_send_list_folder, constUserID);
                                                 send(network_socket, mes_send_list_folder, sizeof(mes_send_list_folder), 0);
                                                 memset(mes_send_list_folder, '\0', (strlen(mes_send_list_folder) + 1));
                                                 read_len = recv(network_socket, mes_recv_list_folder, sizeof(mes_recv_list_folder), 0);
@@ -435,6 +430,8 @@ int main(int argc, const char *argv[])
                                                 strcpy(mes_send_list_file, LIST_FILE);
                                                 strcat(mes_send_list_file, "*");
                                                 strcat(mes_send_list_file, groupID);
+                                                strcat(mes_send_list_file, "*");
+                                                strcat(mes_send_list_file, constUserID);
                                                 send(network_socket, mes_send_list_file, sizeof(mes_send_list_file), 0);
                                                 memset(mes_send_list_file, '\0', (strlen(mes_send_list_file) + 1));
                                                 read_len = recv(network_socket, mes_recv_list_file, sizeof(mes_recv_list_file), 0);
@@ -676,7 +673,6 @@ int main(int argc, const char *argv[])
                         }
                         case 4:
                         {
-
                             char mes_send_myShareGroup[1024] = {0};
                             char mes_recv_myShareGroup[1024] = {0};
                             strcpy(mes_send_myShareGroup, SHARE_GROUP);
@@ -690,13 +686,9 @@ int main(int argc, const char *argv[])
                             //  printf("read_len : %d\n", read_len);
                             mes_recv_myShareGroup[read_len] = '\0';
 
-                            if (strcmp(mes_recv_myShareGroup, "0") == 0)
-                            {
+                            if (strcmp(mes_recv_myShareGroup, "0") == 0) {
                                 printf(COLOR_RED "No group found \n" COLOR_RESET);
-                            }
-                            else
-                            {
-
+                            } else {
                                 // do nothing
                                 userID = strtok(mes_recv_myShareGroup, "*");
                                 char *length1 = strtok(NULL, "*");
@@ -764,7 +756,7 @@ int main(int argc, const char *argv[])
 
                                             share_group_page();
 
-                                            printf(COLOR_GREEN"Your choose : "COLOR_RESET);
+                                            printf(COLOR_GREEN "Your choose : " COLOR_RESET);
                                             scanf("%d", &choose2);
                                             getchar();
                                             switch (choose2)
@@ -772,19 +764,22 @@ int main(int argc, const char *argv[])
                                             case 1:
                                             {
                                                 // printf("userID : %s\n", constUserID);
-                                                char mes_send_list_member[255];
-                                                char mes_recv_list_member[255];
+                                                char mes_send_list_member[BUFF_SIZE] = {0};
+                                                char mes_recv_list_member[BUFF_SIZE] = {0};
                                                 strcpy(mes_send_list_member, LIST_MEMBER);
                                                 strcat(mes_send_list_member, "*");
                                                 strcat(mes_send_list_member, groupID);
+                                                strcat(mes_send_list_member, "*");
+                                                strcat(mes_send_list_member, constUserID);
                                                 send(network_socket, mes_send_list_member, sizeof(mes_send_list_member), 0);
                                                 memset(mes_send_group_id, '\0', (strlen(mes_send_group_id) + 1));
                                                 read_len = recv(network_socket, mes_recv_list_member, sizeof(mes_recv_list_member), 0);
+
                                                 mes_recv_list_member[read_len] = '\0';
-                                                // printf("test chuoi : %s\n", mes_recv_list_member);
-                                                if (strcmp(mes_send_list_member, "0") == 0)
+                                                printf("test chuoi : %s|||\n", mes_recv_list_member);
+                                                if (strcmp(mes_recv_list_member, "0") == 0)
                                                 {
-                                                    printf(COLOR_RED "Have no member\n" COLOR_RESET);
+                                                    printf(COLOR_RED "Not allow to get member info\n" COLOR_RESET);
                                                 }
                                                 else
                                                 {
@@ -809,26 +804,25 @@ int main(int argc, const char *argv[])
                                                         }
                                                         strcpy(&(listMember[j][255]), p);
                                                     }
-                                                    printf(COLOR_BLUE "_____________________________LIST MEMBER_________________________\n" COLOR_RESET);
-                                                    // printf("STT\t| User ID\t\t| UserName\t\t| Role\n");
-                                                    printf("%-11s| %-15s| %-18s| %-3s \n", "STT", "UserID", "UserName", "Role");
-                                                    printf(COLOR_BLUE "__________________________________________________________________\n" COLOR_RESET);
+                                                    printf(COLOR_BLUE "_________________________________________________________LIST MEMBER_________________________________________________________\n" COLOR_RESET);
+
+                                                    printf("%-11s| %-15s| %-18s| %-30s| %-3s \n", "STT", "UserID", "UserName", "Email", "Role");
+                                                    printf(COLOR_BLUE "______________________________________________________________________________________________________________________________\n" COLOR_RESET);
                                                     int k = 0;
 
-                                                    for (int i = 0; i < (length * 2); i += 2)
+                                                    for (int i = 0; i < (length * 3); i += 3)
                                                     {
                                                         if (i == 0)
                                                         {
-                                                            printf("%-11d| %-15s| %-18s| %-3s \n", k + 1, &listMember[i][255], &listMember[i + 1][255], "Admin");
-                                                            k++;
+                                                            printf("%-11d| %-15s| %-18s| %-30s| %-3s \n", k + 1, &listMember[i][255], &listMember[i + 1][255], &listMember[i + 2][255], "Admin");
                                                         }
                                                         else
                                                         {
-                                                            printf("%-11d| %-15s| %-18s| %-3s \n", k + 1, &listMember[i][255], &listMember[i + 1][255], "Member");
-                                                            k++;
+                                                            printf("%-11d| %-15s| %-18s| %-30s| %-3s \n", k + 1, &listMember[i][255], &listMember[i + 1][255], &listMember[i + 2][255], "Member");
                                                         }
+                                                        k++;
                                                     }
-                                                    printf(COLOR_BLUE "__________________________________________________________________\n" COLOR_RESET);
+                                                    printf(COLOR_BLUE "______________________________________________________________________________________________________________________________\n" COLOR_RESET);
                                                 }
                                                 break;
                                             }
@@ -840,6 +834,8 @@ int main(int argc, const char *argv[])
                                                 strcpy(mes_send_list_folder, LIST_FOLDER);
                                                 strcat(mes_send_list_folder, "*");
                                                 strcat(mes_send_list_folder, groupID);
+                                                strcat(mes_send_list_folder, "*");
+                                                strcat(mes_send_list_folder, constUserID);
                                                 send(network_socket, mes_send_list_folder, sizeof(mes_send_list_folder), 0);
                                                 memset(mes_send_list_folder, '\0', (strlen(mes_send_list_folder) + 1));
                                                 read_len = recv(network_socket, mes_recv_list_folder, sizeof(mes_recv_list_folder), 0);
@@ -847,7 +843,7 @@ int main(int argc, const char *argv[])
                                                 // printf("check string : %s\n", mes_recv_list_folder);
                                                 if (strcmp(mes_recv_list_folder, "0") == 0)
                                                 {
-                                                    printf(COLOR_RED "There are no folder in this group\n" COLOR_RESET);
+                                                    printf(COLOR_RED "There are no folder in this group or not allow to get list folder!\n" COLOR_RESET);
                                                     break;
                                                 }
                                                 else
@@ -899,6 +895,8 @@ int main(int argc, const char *argv[])
                                                 strcpy(mes_send_list_file, LIST_FILE);
                                                 strcat(mes_send_list_file, "*");
                                                 strcat(mes_send_list_file, groupID);
+                                                strcat(mes_send_list_file, "*");
+                                                strcat(mes_send_list_file, constUserID);
                                                 send(network_socket, mes_send_list_file, sizeof(mes_send_list_file), 0);
                                                 memset(mes_send_list_file, '\0', (strlen(mes_send_list_file) + 1));
                                                 read_len = recv(network_socket, mes_recv_list_file, sizeof(mes_recv_list_file), 0);
@@ -906,7 +904,7 @@ int main(int argc, const char *argv[])
                                                 // printf("check string : %s\n", mes_recv_list_file);
                                                 if (strcmp(mes_recv_list_file, "0") == 0)
                                                 {
-                                                    printf(COLOR_RED "There are no files in this folder\n" COLOR_RESET);
+                                                    printf(COLOR_RED "There are no files in this folder or not allow to get list file\n" COLOR_RESET);
                                                     break;
                                                 }
                                                 else
@@ -1047,13 +1045,16 @@ int main(int argc, const char *argv[])
                                                 break;
                                             }
                                             default:
+                                            {
                                                 break;
                                             }
+                                            }
                                         } while (choose2 != 9);
+                                    break;
                                     }
                                 }
                             }
-                            break;
+                            printf("choose5\n");
                         }
 
                         case 5:
@@ -1111,12 +1112,10 @@ int main(int argc, const char *argv[])
                             printf("Function does not exist, please try again \n");
                             break;
                         }
-                        }
-                        while (choose != 6)
-                            ;
-                    }
-                    break;
+                    } while (choose != 6);
                 }
+                break;
+            }
             case 2:
             {
                 system("clear");
@@ -1194,12 +1193,10 @@ int main(int argc, const char *argv[])
                 break;
             }
             }
-            }
-            while (choice != 3)
-                ;
-        }
-        close(network_socket);
-
-        printf("\n________________See you again________________\n");
-        return 0;
+        } while (choice != 3);
     }
+    close(network_socket);
+
+    printf("\n________________See you again________________\n");
+    return 0;
+}
