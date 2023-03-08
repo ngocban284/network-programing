@@ -19,10 +19,8 @@
 #include <dirent.h>
 #include <errno.h>
 #include "user.h"
-#define db_host "localhost"
-#define db_user "root"
-#define db_pass "vuong2001"
-#define db_name "network"
+#include "define.h"
+
 char *show_all_user(char *temp);
 char *show_profile(char *userID, char *temp);
 char *list_member(char* userID, char *groupID, char *temp);

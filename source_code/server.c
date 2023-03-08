@@ -10,9 +10,6 @@
 #include <unistd.h>
 #include <mysql/mysql.h>
 
-#define BUFF_SIZE 4096
-#define MIN_SIZE 255
-
 #define SIGN_IN 0
 #define SIGN_UP 1
 #define PROFILE 2
@@ -35,9 +32,10 @@
 #define LIST_FILE 19
 #define LIST_ALL_USER 20
 
-
+#include "define.h"
 #include "menu.h"
 #include "file.h"
+#include "fileRes.h"
 #include "user.h"
 #include "folder.h"
 #include "show.h"

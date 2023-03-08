@@ -18,12 +18,9 @@
 #include <fcntl.h>
 #include <dirent.h> 
 #include <errno.h>
+#include "define.h"
 
-#define db_host "localhost"
-#define db_user "root"
-#define db_pass "vuong2001"
-#define db_name "network"
-#define SIZE 1024
+
 //done
 char *get_folderid_via_foldername(MYSQL *con, char *foldername);
 char *get_groupid_via_foldername(MYSQL *con,char *foldername); // tra ve GroupId cua filename

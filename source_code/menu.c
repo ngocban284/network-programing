@@ -33,9 +33,9 @@ void home_page(){
     printf("\n");
     printf("\t\t\t1. Your profile\n");
     printf("\t\t\t2. User list\n");
-    printf("\t\t\t3. My group\n");
-    printf("\t\t\t4. My share group\n");
-    printf("\t\t\t5. Create a group\n");
+    printf("\t\t\t3. My space\n");
+    printf("\t\t\t4. My share space\n");
+    printf("\t\t\t5. Create a space\n");
     printf("\t\t\t6. Logout\n");
     printf(COLOR_BLUE"_________________________________________________________________________________\n"COLOR_RESET);
 }
@@ -52,7 +52,7 @@ void admin_page(){
     printf("\t\t\t8. Delele Folder \n");
     printf("\t\t\t9. Add member\n");
     printf("\t\t\t10. Delete memeber\n");
-    printf("\t\t\t11. Delete group\n");
+    printf("\t\t\t11. Delete space\n");
     printf("\t\t\t12. Back\n");
     printf(COLOR_BLUE"________________________________________________________________________________________\n"COLOR_RESET);
 }
@@ -65,7 +65,7 @@ void share_group_page(){
     printf("\t\t\t5. Download file.\n");
     printf("\t\t\t6. Remove file.\n");
     printf("\t\t\t7. Create Folder. \n");
-    printf("\t\t\t8. Out group.\n");
+    printf("\t\t\t8. Out space.\n");
     printf("\t\t\t9. Back .\n");
     printf(COLOR_BLUE"________________________________________________________________________________________\n"COLOR_RESET);
 }

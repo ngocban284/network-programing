@@ -13,15 +13,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <math.h>
-#define COLOR_RED "\x1b[31m"
-#define COLOR_GREEN "\x1b[32m"
-#define COLOR_BLUE "\x1b[34m"
-#define COLOR_RESET "\x1b[0m"
-#define BUFF_SIZE 4096
-#define db_host "localhost"
-#define db_user "root"
-#define db_pass "vuong2001"
-#define db_name "network"
+#include "define.h"
 
 int check_dir_exist();
 void makedir();

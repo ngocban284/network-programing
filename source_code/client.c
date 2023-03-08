@@ -6,10 +6,6 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <unistd.h>
-// #define SERVER_ADDR "192.168.37.135"
-#define SERVER_ADDR "127.0.0.1"
-
-#define BUFF_SIZE 4096
 
 #define SIGN_IN "0"
 #define SIGN_UP "1"
@@ -33,8 +29,10 @@
 #define LIST_FILE "19"
 #define LIST_ALL_USER "20"
 
+#include "define.h"
 #include "menu.h"
 #include "file.h"
+#include "fileRes.h"
 #include "user.h"
 #include "folder.h"
 #include "show.h"
@@ -223,7 +221,7 @@ int main(int argc, const char *argv[])
                             mes_recv_myGroup[read_len] = '\0';
                             if (strcmp(mes_recv_myGroup, "0") == 0)
                             {
-                                printf(COLOR_RED "You have not any group\n" COLOR_RESET);
+                                printf(COLOR_RED "You have not any space\n" COLOR_RESET);
                             }
                             else
                             {
@@ -246,9 +244,9 @@ int main(int argc, const char *argv[])
                                     strcpy(&(listGroup[j][255]), p);
                                 }
 
-                                printf(COLOR_BLUE "____________________________MY GROUP______________________________\n");
+                                printf(COLOR_BLUE "____________________________MY SPACE______________________________\n");
                                 // printf("\nSTT\t| Group Name\t\t\t| Description\t\t| Group ID\n");
-                                printf("%-11s| %-26s | %-21s | %-3s \n", "STT", "GroupName", "Description", "GroupID");
+                                printf("%-11s| %-26s | %-21s | %-3s \n", "STT", "SpaceName", "Description", "SpaceID");
                                 printf("____________________________________________________________________\n\n" COLOR_RESET);
                                 int k = 0;
                                 for (int i = 0; i < (atoi(length1) * 3); i += 3)
@@ -258,13 +256,13 @@ int main(int argc, const char *argv[])
                                 }
                                 printf(COLOR_BLUE "____________________________________________________________________\n\n" COLOR_RESET);
                                 char input[2];
-                                printf("Do you want to access the group, enter y(or Y)/ NO(enter any key) :");
+                                printf("Do you want to access the space, enter y(or Y)/ NO(enter any key) :");
                                 scanf("%[^\n]", input);
                                 getchar();
                                 if (strcmp(input, "y") == 0 || strcmp(input, "Y") == 0)
                                 {
                                     char groupID[5];
-                                    printf("Enter ID group : ");
+                                    printf("Enter ID space : ");
                                     scanf("%[^\n]", groupID);
                                     getchar();
                                     char mes_send_group_id[BUFF_SIZE];
@@ -282,7 +280,7 @@ int main(int argc, const char *argv[])
                                     // printf("check result : %d\n", check);
                                     if (check == 0)
                                     {
-                                        printf(COLOR_RED "Failed, ID group does not exist!, Try again.\n" COLOR_RESET);
+                                        printf(COLOR_RED "Failed, ID space does not exist!, Try again.\n" COLOR_RESET);
                                     }
                                     else
                                     {
@@ -376,7 +374,7 @@ int main(int argc, const char *argv[])
                                                 // printf("check string : %s\n", mes_recv_list_folder);
                                                 if (strcmp(mes_recv_list_folder, "0") == 0)
                                                 {
-                                                    printf(COLOR_RED "There are no folder in this group\n" COLOR_RESET);
+                                                    printf(COLOR_RED "There are no folder in this space\n" COLOR_RESET);
                                                     break;
                                                 }
                                                 else
@@ -611,7 +609,7 @@ int main(int argc, const char *argv[])
                                                 }
                                                 else if (check == 2)
                                                 {
-                                                    printf(COLOR_RED " Delete member failed,  %s does not exist on group !!.\n" COLOR_RESET, email);
+                                                    printf(COLOR_RED " Delete member failed,  %s does not exist on space !!.\n" COLOR_RESET, email);
                                                 }
                                                 else
                                                 {
@@ -625,7 +623,7 @@ int main(int argc, const char *argv[])
                                                 char mes_send_del_group[255] = {0};
                                                 char mes_recv_del_group[255] = {0};
                                                 char sureDel[255];
-                                                printf("Are you sure you want to delete this group?");
+                                                printf("Are you sure you want to delete this space?");
                                                 printf("Enter y( or Y)/ NO (any key) : ");
                                                 scanf("%[^\n]", sureDel);
                                                 getchar();
@@ -643,11 +641,11 @@ int main(int argc, const char *argv[])
                                                     printf("check result : %d\n", check);
                                                     if (check == 0)
                                                     {
-                                                        printf(COLOR_RED " Delete group failed, Try again.\n" COLOR_RESET);
+                                                        printf(COLOR_RED " Delete space failed, Try again.\n" COLOR_RESET);
                                                     }
                                                     else
                                                     {
-                                                        printf(COLOR_GREEN " Delete group successfull !!.\n" COLOR_RESET);
+                                                        printf(COLOR_GREEN " Delete space successfull !!.\n" COLOR_RESET);
                                                         choose1 = 12;
                                                         break;
                                                     }
@@ -687,7 +685,7 @@ int main(int argc, const char *argv[])
                             mes_recv_myShareGroup[read_len] = '\0';
 
                             if (strcmp(mes_recv_myShareGroup, "0") == 0) {
-                                printf(COLOR_RED "No group found \n" COLOR_RESET);
+                                printf(COLOR_RED "No space found \n" COLOR_RESET);
                             } else {
                                 // do nothing
                                 userID = strtok(mes_recv_myShareGroup, "*");
@@ -708,9 +706,9 @@ int main(int argc, const char *argv[])
                                     }
                                     strcpy(&(listGroup[j][255]), p);
                                 }
-                                printf(COLOR_BLUE "____________________________MY SHARE GROUP____________________________\n" COLOR_RESET);
+                                printf(COLOR_BLUE "____________________________MY SHARE Space____________________________\n" COLOR_RESET);
                                 // printf("STT\t|Group ID\t\t|\tGroupName\t\n");
-                                printf("%-11s|  %-13s |\t%-22s\n", "STT", "GroupID", "GroupName");
+                                printf("%-11s|  %-13s |\t%-22s\n", "STT", "SpaceID", "SpaceName");
                                 printf(COLOR_BLUE "__________________________________________________________________\n" COLOR_RESET);
                                 int k = 0;
                                 for (int i = 0; i < (length * 2); i += 2)
@@ -721,13 +719,13 @@ int main(int argc, const char *argv[])
                                 }
                                 printf(COLOR_BLUE "__________________________________________________________________\n" COLOR_RESET);
                                 char input[2];
-                                printf("Do you want to access the share group, enter y (or Y)/ NO(enter any key):");
+                                printf("Do you want to access the share space, enter y (or Y)/ NO(enter any key):");
                                 scanf("%[^\n]", input);
                                 getchar();
                                 if (strcmp(input, "y") == 0 || strcmp(input, "Y") == 0)
                                 {
                                     char groupID[5];
-                                    printf("Enter ID group: ");
+                                    printf("Enter ID space: ");
                                     scanf("%[^\n]", groupID);
                                     getchar();
                                     char mes_send_group_id[255];
@@ -746,7 +744,7 @@ int main(int argc, const char *argv[])
                                     // printf("check result : %d\n", check);
                                     if (check == 0)
                                     {
-                                        printf(COLOR_RED "Failed, ID group does not exist!, Try again.\n" COLOR_RESET);
+                                        printf(COLOR_RED "Failed, ID space does not exist!, Try again.\n" COLOR_RESET);
                                     }
                                     else
                                     {
@@ -843,7 +841,7 @@ int main(int argc, const char *argv[])
                                                 // printf("check string : %s\n", mes_recv_list_folder);
                                                 if (strcmp(mes_recv_list_folder, "0") == 0)
                                                 {
-                                                    printf(COLOR_RED "There are no folder in this group or not allow to get list folder!\n" COLOR_RESET);
+                                                    printf(COLOR_RED "There are no folder in this space or not allow to get list folder!\n" COLOR_RESET);
                                                     break;
                                                 }
                                                 else
@@ -1010,7 +1008,7 @@ int main(int argc, const char *argv[])
                                                 char mes_send_out_group[255] = {0};
                                                 char mes_recv_out_group[255] = {0};
                                                 char sureOut[255];
-                                                printf("Do you want to leave this group?");
+                                                printf("Do you want to leave this space?");
                                                 printf("Enter y( or Y)/ NO (any key) : ");
                                                 scanf("%[^\n]", sureOut);
                                                 getchar();
@@ -1029,11 +1027,11 @@ int main(int argc, const char *argv[])
                                                     printf("check result : %d\n", check);
                                                     if (check == 0)
                                                     {
-                                                        printf(" Out group failed, Try again.\n");
+                                                        printf(" Out space failed, Try again.\n");
                                                     }
                                                     else
                                                     {
-                                                        printf(" Leave group successfull !!.\n");
+                                                        printf(" Leave space successfull !!.\n");
                                                         choose2 = 9;
                                                         break;
                                                     }
@@ -1055,6 +1053,7 @@ int main(int argc, const char *argv[])
                                 }
                             }
                             printf("choose5\n");
+                            break;
                         }
 
                         case 5:
@@ -1070,11 +1069,11 @@ int main(int argc, const char *argv[])
                             strcat(mes_send_create_group, constUserID);
                             strcat(mes_send_create_group, "*");
 
-                            printf("Enter Group Name : ");
+                            printf("Enter Space Name : ");
                             scanf("%[^\n]%*c", groupName);
                             // ltrim(groupName);
                             // rtrim(groupName);
-                            printf("Enter Group Description : ");
+                            printf("Enter Space Description : ");
                             scanf("%[^\n]%*c", group_descrp);
                             // ltrim(group_descrp);
                             // rtrim(group_descrp);
@@ -1092,15 +1091,15 @@ int main(int argc, const char *argv[])
                             // printf("status: %d",status);
                             if (status == 1)
                             {
-                                printf(COLOR_GREEN "Create group \"%s\" successfull !\n" COLOR_RESET, groupName);
+                                printf(COLOR_GREEN "Create space \"%s\" successfull !\n" COLOR_RESET, groupName);
                             }
                             else if (status == 2)
                             {
-                                printf(COLOR_RED "Group name existed, please try again !\n" COLOR_RESET);
+                                printf(COLOR_RED "Space name existed, please try again !\n" COLOR_RESET);
                             }
                             else
                             {
-                                printf(COLOR_RED "Group creation failed, try again !\n" COLOR_RESET);
+                                printf(COLOR_RED "Space creation failed, try again !\n" COLOR_RESET);
                             }
                             break;
                         }

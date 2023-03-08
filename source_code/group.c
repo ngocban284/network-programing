@@ -48,7 +48,7 @@ char *my_group(char *userID, char *temp)
             }
             else
             {
-                printf("-------- Tra ve my group----------\n");
+                printf("-------- Tra ve my space----------\n");
                 strcpy(temp, userID);
                 char s[10];
                 strcat(temp, "*");
@@ -123,7 +123,7 @@ char *shareGroup(char *userID, char *temp)
             }
             else
             {
-                printf("------- Tra ve list My Share Group --------\n");
+                printf("------- Tra ve list My Share Space --------\n");
                 // strcpy(temp,user)
                 char s[3];
                 strcpy(temp, userID);
@@ -303,10 +303,10 @@ int create_group(char *userID, char *groupName, char *groupDescrp)
                     char groupID[10];
                     while ((row = mysql_fetch_row(result)) != NULL)
                     {
-                        printf("-------- tra ve create group----------\n");
-                        printf("groupID : %s\n", row[i]);
+                        printf("-------- tra ve create space----------\n");
+                        printf("spaceID : %s\n", row[i]);
                         strcpy(groupID, row[i]);
-                        printf("groupID : %s\n", groupID);
+                        printf("spaceID : %s\n", groupID);
                     }
                     sprintf(query2, "INSERT INTO share_group(UserID, GroupID) VALUES (\"%s\",\"%s\")", userID, groupID);
                     mysql_query(sql, query2);
@@ -338,6 +338,7 @@ int create_group(char *userID, char *groupName, char *groupDescrp)
     mysql_close(sql);
     return state;
 }
+
 int access_group(char *groupID, char *userID)
 {
     MYSQL *sql = mysql_init(NULL);
@@ -377,12 +378,12 @@ int access_group(char *groupID, char *userID)
         {
             MYSQL_ROW row;
             char temp[255] = "";
-            printf("-------- Tra ve access group----------\n");
+            printf("-------- Tra ve access space----------\n");
             // strcpy(temp, userID);
             while ((row = mysql_fetch_row(result)) != NULL)
             {
                 int i = 0;
-                printf("Group : %s %s %s %s\n", row[i], row[i + 1], row[i + 2], row[i + 3]);
+                printf("Space : %s %s %s %s\n", row[i], row[i + 1], row[i + 2], row[i + 3]);
                 strcpy(temp, row[i]);
             }
             printf("check temp : %s\n", temp);
@@ -396,6 +397,7 @@ int access_group(char *groupID, char *userID)
     mysql_close(sql);
     return state;
 }
+
 int access_share_group(char *groupID, char *userID)
 {
     MYSQL *sql = mysql_init(NULL);
@@ -413,7 +415,7 @@ int access_share_group(char *groupID, char *userID)
         mysql_close(sql);
         return state;
     }
-    printf("check groupid : %s\n", groupID);
+    printf("check spaceid : %s\n", groupID);
     printf("check userid : %s\n", userID);
     char *query = (char *)malloc(255 * sizeof(char));
     sprintf(query, "SELECT * FROM share_group where GroupID = \"%s\" and UserID = \"%s\" ", groupID, userID);
@@ -441,7 +443,7 @@ int access_share_group(char *groupID, char *userID)
                 printf("check row count : %ld\n", result->row_count);
             }
             char temp[255] = "";
-            printf("-------- Tra ve access share group----------\n");
+            printf("-------- Tra ve access share space----------\n");
             // strcpy(temp, userID);
             while ((row = mysql_fetch_row(result)) != NULL)
             {

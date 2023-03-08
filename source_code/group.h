@@ -19,11 +19,7 @@
 #include <dirent.h> 
 #include <errno.h>
 #include "user.h"
-
-#define db_host "localhost"
-#define db_user "root"
-#define db_pass "vuong2001"
-#define db_name "network"
+#include "define.h"
 
 int access_group(char *groupID, char *userID);
 int access_share_group(char *groupID, char *userID);
