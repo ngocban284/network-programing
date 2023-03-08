@@ -7,7 +7,7 @@ void finish_with_error(MYSQL *con)
     exit(1);
 }
 
-int isGroupAdmin(MYSQL *con, char *UserID, char *GroupID)
+int isSpaceAdmin(MYSQL *con, char *UserID, char *SpaceID)
 {
     int permission = 0;
     con = mysql_init(NULL);
@@ -23,8 +23,8 @@ int isGroupAdmin(MYSQL *con, char *UserID, char *GroupID)
     }
 
     char *que = (char *)malloc(255 * sizeof(que));
-    // check user in group or not
-    sprintf(que, " SELECT * FROM network_group WHERE GroupID LIKE \"%s\" AND UserID LIKE \"%s\" ", GroupID, UserID);
+    // check user in space or not
+    sprintf(que, " SELECT * FROM network_space WHERE SpaceID LIKE \"%s\" AND UserID LIKE \"%s\" ", SpaceID, UserID);
     if (mysql_query(con, que))
     {
         finish_with_error(con);
@@ -85,7 +85,7 @@ char *get_userid_via_email(MYSQL *con, char *email)
     free(ery);
     return temp;
 }
-char *get_groupid_via_foldername(MYSQL *con, char *foldername)
+char *get_spaceid_via_foldername(MYSQL *con, char *foldername)
 {
     con = mysql_init(NULL);
     char *temp = (char *)malloc(255 * sizeof(temp));
@@ -99,7 +99,7 @@ char *get_groupid_via_foldername(MYSQL *con, char *foldername)
         finish_with_error(con);
     }
     char *ery = (char *)malloc(255 * sizeof(char));
-    sprintf(ery, "SELECT GroupID FROM share_folder WHERE FolderName like \"%s\"", foldername);
+    sprintf(ery, "SELECT SpaceID FROM share_folder WHERE FolderName like \"%s\"", foldername);
 
     if (mysql_query(con, ery))
     {
@@ -122,7 +122,7 @@ char *get_groupid_via_foldername(MYSQL *con, char *foldername)
     free(ery);
     return temp;
 }
-char *get_foldername_via_gid(MYSQL *con, char *groupid)
+char *get_foldername_via_gid(MYSQL *con, char *spaceid)
 {
     con = mysql_init(NULL);
     char *temp = (char *)malloc(255 * sizeof(temp));
@@ -136,7 +136,7 @@ char *get_foldername_via_gid(MYSQL *con, char *groupid)
         finish_with_error(con);
     }
     char *ery = (char *)malloc(255 * sizeof(char));
-    sprintf(ery, "SELECT GroupName FROM network_group WHERE GroupID like \"%s\"", groupid);
+    sprintf(ery, "SELECT SpaceName FROM network_space WHERE SpaceID like \"%s\"", spaceid);
 
     if (mysql_query(con, ery))
     {
@@ -210,11 +210,11 @@ int check_user_access(MYSQL *con, char *UserID, char *foldername)
     {
         finish_with_error(con);
     }
-    char *GID = get_groupid_via_foldername(con, foldername);
+    char *GID = get_spaceid_via_foldername(con, foldername);
     char *que = (char *)malloc(SIZE * sizeof(que));
-    // check user in group or not
+    // check user in space or not
 
-    sprintf(que, "SELECT * FROM share_group WHERE UserID = \"%s\" and GroupID = \"%s\"", UserID, GID);
+    sprintf(que, "SELECT * FROM share_space WHERE UserID = \"%s\" and SpaceID = \"%s\"", UserID, GID);
 
     if (mysql_query(con, que))
     {
@@ -257,7 +257,7 @@ int check_folder_owner(MYSQL *con, char *UserID, char *foldername)
     }
 
     char *que = (char *)malloc(255 * sizeof(que));
-    // check user in group or not
+    // check user in space or not
     sprintf(que, "SELECT * FROM share_folder WHERE UserID LIKE \"%s\" FolderName like \"%s\")", UserID, foldername);
     if (mysql_query(con, que))
     {
@@ -298,7 +298,7 @@ int check_file_owner(MYSQL *con, char *UserID, char *filename)
     }
 
     char *que = (char *)malloc(255 * sizeof(que));
-    // check user in group or not
+    // check user in space or not
     sprintf(que, "SELECT * FROM share_file WHERE UserID like \"%s\" AND FileName like \"%s\"", UserID, filename);
 
     if (mysql_query(con, que))
@@ -437,7 +437,7 @@ int sign_up(char *username, char *email, char *password)
     mysql_close(sql);
     return state;
 }
-char *get_groupname_via_groupID(MYSQL *con, char *groupID)
+char *get_spacename_via_spaceID(MYSQL *con, char *spaceID)
 {
 
     con = mysql_init(NULL);
@@ -452,7 +452,7 @@ char *get_groupname_via_groupID(MYSQL *con, char *groupID)
         finish_with_error(con);
     }
     char *ery = (char *)malloc(255 * sizeof(char));
-    sprintf(ery, "SELECT GroupName FROM network_group WHERE GroupID like \"%s\"", groupID);
+    sprintf(ery, "SELECT SpaceName FROM network_space WHERE SpaceID like \"%s\"", spaceID);
 
     if (mysql_query(con, ery))
     {
@@ -475,7 +475,7 @@ char *get_groupname_via_groupID(MYSQL *con, char *groupID)
     free(ery);
     return temp;
 }
-int delete_member(char *email, char *groupID)
+int delete_member(char *email, char *spaceID)
 {
     MYSQL *sql = mysql_init(NULL);
     int state = 0;
@@ -493,7 +493,7 @@ int delete_member(char *email, char *groupID)
         return state;
     }
     char *UID = get_userid_via_email(sql, email);
-    int check = isGroupAdmin(sql, UID, groupID);
+    int check = isSpaceAdmin(sql, UID, spaceID);
     if (check == 1)
     {
         return state;
@@ -533,9 +533,9 @@ int delete_member(char *email, char *groupID)
                 {
                     printf("----------tra ve member to delete--------\n");
                     printf("UserID : %s\n", row[i]);
-                    printf("Group ID : %s\n", groupID);
-                    sprintf(query1, "SELECT * FROM share_group where GroupID = \"%s\" AND UserID = \"%s\" ", groupID, row[i]);
-                    sprintf(query2, "DELETE FROM share_group WHERE UserID = \"%s\" AND GroupID = \"%s\"", row[i], groupID);
+                    printf("Space ID : %s\n", spaceID);
+                    sprintf(query1, "SELECT * FROM share_space where SpaceID = \"%s\" AND UserID = \"%s\" ", spaceID, row[i]);
+                    sprintf(query2, "DELETE FROM share_space WHERE UserID = \"%s\" AND SpaceID = \"%s\"", row[i], spaceID);
                     if (mysql_query(sql, query1))
                     {
                         fprintf(stderr, "2 : %s\n", mysql_error(sql));
@@ -586,7 +586,7 @@ int delete_member(char *email, char *groupID)
     return state;
 }
 
-int add_member(char *email, char *groupID)
+int add_member(char *email, char *spaceID)
 {
     MYSQL *sql = mysql_init(NULL);
     int state = 0;
@@ -634,9 +634,9 @@ int add_member(char *email, char *groupID)
             {
                 printf("----------tra ve add member--------\n");
                 printf("UserID : %s\n", row[i]);
-                printf("Group ID : %s\n", groupID);
-                sprintf(query1, "SELECT * FROM share_group where GroupID = \"%s\" AND UserID = \"%s\" ", groupID, row[i]);
-                sprintf(query2, "INSERT INTO share_group VALUES(\"%s\", \"%s\")", row[i], groupID);
+                printf("Space ID : %s\n", spaceID);
+                sprintf(query1, "SELECT * FROM share_space where SpaceID = \"%s\" AND UserID = \"%s\" ", spaceID, row[i]);
+                sprintf(query2, "INSERT INTO share_space VALUES(\"%s\", \"%s\")", row[i], spaceID);
                 if (mysql_query(sql, query1))
                 {
                     fprintf(stderr, "2 : %s\n", mysql_error(sql));

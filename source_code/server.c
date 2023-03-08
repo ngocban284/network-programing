@@ -9,29 +9,6 @@
 #include <libgen.h>
 #include <unistd.h>
 #include <mysql/mysql.h>
-
-#define SIGN_IN 0
-#define SIGN_UP 1
-#define PROFILE 2
-#define MY_GROUP 3
-#define ACCESS_GROUP 4
-#define CREATE_GROUP 5
-#define SHARE_GROUP 6
-#define LIST_MEMBER 7
-#define ADD_MEMBER 8
-#define DELETE_MEMBER 9
-#define DELETE_GROUP 10
-#define CREATE_DIR 11
-#define REMOVE_DIR 12
-#define UPLOAD_FILE 13
-#define DOWNLOAD_FILE 14
-#define REMOVE_FILE 15
-#define OUT_GROUP 16
-#define ACCESS_SHARE_GROUP 17
-#define LIST_FOLDER 18
-#define LIST_FILE 19
-#define LIST_ALL_USER 20
-
 #include "define.h"
 #include "menu.h"
 #include "file.h"
@@ -68,17 +45,17 @@ void *connection_handler(void *client_socket)
 
                 switch (check_code)
                 {
-                case LIST_FOLDER:
+                case FN_LIST_FOLDER:
                 {
                     printf("------------List folder --------------\n");
                     char *code = strtok(client_message, "*");
-                    char *groupID = strtok(NULL, "*");
+                    char *spaceID = strtok(NULL, "*");
                     char *userID = strtok(NULL, "*");
                     char temp[1024] = "";
                     printf("code : %s\n", code);
-                    printf("groupID : %s\n", groupID);
+                    printf("spaceID : %s\n", spaceID);
                     printf("userID : %s\n", userID);
-                    char *status = list_folder(userID, groupID, temp);
+                    char *status = list_folder(userID, spaceID, temp);
                     printf("status : %s\n", status);
                     if (strcmp(temp, "0") == 0)
                     {
@@ -90,17 +67,17 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case LIST_FILE:
+                case FN_LIST_FILE:
                 {
                     printf("------------List file --------------\n");
                     char *code = strtok(client_message, "*");
-                    char *groupID = strtok(NULL, "*");
+                    char *spaceID = strtok(NULL, "*");
                     char *userID = strtok(NULL, "*");
                     char temp[1024] = "";
                     printf("code : %s\n", code);
-                    printf("groupID : %s\n", groupID);
+                    printf("spaceID : %s\n", spaceID);
                     printf("userID : %s\n", userID);
-                    char *status = list_file(userID, groupID, temp);
+                    char *status = list_file(userID, spaceID, temp);
                     printf("status : %s, %ld\n", status, strlen(status));
                     if (strcmp(status, "0") == 0)
                     {
@@ -124,7 +101,7 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case SIGN_IN:
+                case FN_SIGN_IN:
                 {
                     char *code = strtok(client_message, "*");
                     char *email = strtok(NULL, "*");
@@ -147,7 +124,7 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case SIGN_UP:
+                case FN_SIGN_UP:
                 {
                     char *code = strtok(client_message, "*");
                     char *username = strtok(NULL, "*");
@@ -176,7 +153,7 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case PROFILE:
+                case FN_PROFILE:
                 {
                     char *code = strtok(client_message, "*");
                     char *userID = strtok(NULL, "*");
@@ -195,7 +172,7 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case LIST_ALL_USER:
+                case FN_LIST_ALL_USER:
                 {
                     printf("------------List all user--------------\n");
                     char *code = strtok(client_message, "*");
@@ -215,15 +192,15 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case MY_GROUP:
+                case FN_MY_SPACE:
                 {
-                    printf("------------My group --------------\n");
+                    printf("------------ MY SPACE --------------\n");
                     char *code = strtok(client_message, "*");
                     char *userID = strtok(NULL, "*");
                     char temp[1024] = "";
                     printf("code : %s\n", code);
                     printf("userID : %s\n", userID);
-                    char *status = my_group(userID, temp);
+                    char *status = my_space(userID, temp);
                     printf("status : %s\n", status);
                     printf("temp : %s\n", temp);
                     if (strcmp(status, "0") == 0)
@@ -236,16 +213,16 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case ACCESS_GROUP:
+                case FN_ACCESS_SPACE:
                 {
-                    printf("------------Access group --------------\n");
+                    printf("------------ Access Space --------------\n");
                     char *code = strtok(client_message, "*");
-                    char *groupID = strtok(NULL, "*");
+                    char *spaceID = strtok(NULL, "*");
                     char *userID = strtok(NULL, "*");
                     printf("code : %s\n", code);
-                    printf("groupID : %s\n", groupID);
+                    printf("spaceID : %s\n", spaceID);
                     printf("userID : %s\n", userID);
-                    int status = access_group(groupID, userID);
+                    int status = access_space(spaceID, userID);
                     printf("status : %d\n", status);
 
                     if (status == 0)
@@ -260,16 +237,16 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case ACCESS_SHARE_GROUP:
+                case FN_ACCESS_SHARE_SPACE:
                 {
-                    printf("------------Access share group --------------\n");
+                    printf("------------ Access Share Space --------------\n");
                     char *code = strtok(client_message, "*");
-                    char *groupID = strtok(NULL, "*");
+                    char *spaceID = strtok(NULL, "*");
                     char *userID = strtok(NULL, "*");
                     printf("code : %s\n", code);
-                    printf("groupID : %s\n", groupID);
+                    printf("spaceID : %s\n", spaceID);
                     printf("userID : %s\n", userID);
-                    int status = access_share_group(groupID, userID);
+                    int status = access_share_space(spaceID, userID);
                     printf("status : %d\n", status);
 
                     if (status == 0)
@@ -284,18 +261,18 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case CREATE_GROUP:
+                case FN_CREATE_SPACE:
                 {
                     char *code = strtok(client_message, "*");
                     char *userID = strtok(NULL, "*");
-                    char *groupName = strtok(NULL, "*");
-                    char *groupDescrp = strtok(NULL, "*");
-                    printf("---------------TAO NHOM------------- \n");
+                    char *spaceName = strtok(NULL, "*");
+                    char *spaceDes = strtok(NULL, "*");
+                    printf("--------------- Create Space ------------- \n");
                     printf("code : %s\n", code);
                     printf("userID : %s\n", userID);
-                    printf("group name : %s\n", groupName);
-                    printf("group des : %s\n", groupDescrp);
-                    int status = create_group(userID, groupName, groupDescrp);
+                    printf("space name : %s\n", spaceName);
+                    printf("space description : %s\n", spaceDes);
+                    int status = create_space(userID, spaceName, spaceDes);
                     printf("status : %d\n", status);
                     if (status == 0)
                     {
@@ -314,18 +291,18 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case LIST_MEMBER:
+                case FN_LIST_MEMBER:
                 {
                     printf("------------List member --------------\n");
                     char *code = strtok(client_message, "*");
-                    char *groupID = strtok(NULL, "*");
+                    char *spaceID = strtok(NULL, "*");
                     char *userID = strtok(NULL, "*");
                     char *temp = (char*)malloc(1024*sizeof(char));
                     strcpy(temp, "");
                     printf("code : %s\n", code);
-                    printf("groupID : %s\n", groupID);
+                    printf("spaceID : %s\n", spaceID);
                     printf("userID : %s\n", userID);
-                    char *status = list_member(userID, groupID, temp);
+                    char *status = list_member(userID, spaceID, temp);
                     printf("status : %s\n", status);
                     if (strcmp(temp, "0") == 0)
                     {
@@ -338,15 +315,15 @@ void *connection_handler(void *client_socket)
                     break;
                 }
 
-                case SHARE_GROUP:
+                case FN_SHARE_SPACE:
                 {
-                    printf("------------My share group --------------\n");
+                    printf("------------ My Share Space --------------\n");
                     char *code = strtok(client_message, "*");
                     char *userID = strtok(NULL, "*");
                     char temp[1024] = "";
                     printf("code : %s\n", code);
                     printf("userID : %s\n", userID);
-                    char *status = shareGroup(userID, temp);
+                    char *status = shareSpace(userID, temp);
                     printf("status : %s\n", status);
                     printf("temp : %s\n", temp);
                     if (strcmp(temp, "0") == 0)
@@ -359,15 +336,15 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case ADD_MEMBER:
+                case FN_ADD_MEMBER:
                 {
                     char *code = strtok(client_message, "*");
                     char *email = strtok(NULL, "*");
-                    char *groupID = strtok(NULL, "*");
+                    char *spaceID = strtok(NULL, "*");
                     printf(" code : %s\n", code);
                     printf("email: %s\n ", email);
-                    printf("groupID: %s\n ", groupID);
-                    int status = add_member(email, groupID);
+                    printf("spaceID: %s\n ", spaceID);
+                    int status = add_member(email, spaceID);
                     printf("status : %d\n", status);
                     if (status == 1)
                     {
@@ -386,16 +363,16 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case DELETE_MEMBER:
+                case FN_DELETE_MEMBER:
                 {
-                    printf("------------Delete member --------------\n");
+                    printf("------------ Delete Member --------------\n");
                     char *code = strtok(client_message, "*");
                     char *email = strtok(NULL, "*");
-                    char *groupID = strtok(NULL, "*");
+                    char *spaceID = strtok(NULL, "*");
                     printf("code : %s\n", code);
                     printf("email : %s\n", email);
-                    printf("groupID : %s\n", groupID);
-                    int status = delete_member(email, groupID);
+                    printf("spaceID : %s\n", spaceID);
+                    int status = delete_member(email, spaceID);
                     printf("status : %d\n", status);
 
                     if (status == 0)
@@ -415,15 +392,15 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case DELETE_GROUP:
+                case FN_DELETE_SPACE:
                 {
-                    printf("------------Delete group --------------\n");
+                    printf("------------ Delete Space --------------\n");
                     printf("check chuoi nhan dc : %s\n", client_message);
                     char *code = strtok(client_message, "*");
-                    char *groupID = strtok(NULL, "*");
+                    char *spaceID = strtok(NULL, "*");
                     printf("code : %s\n", code);
-                    printf("groupID : %s\n", groupID);
-                    int status = delete_group(groupID);
+                    printf("spaceID : %s\n", spaceID);
+                    int status = delete_space(spaceID);
                     printf("status : %d\n", status);
 
                     if (status == 0)
@@ -438,17 +415,17 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case OUT_GROUP:
+                case FN_OUT_SPACE:
                 {
-                    printf("------------Out group --------------\n");
+                    printf("------------ Out Space --------------\n");
                     printf("check chuoi nhan dc : %s\n", client_message);
                     char *code = strtok(client_message, "*");
                     char *userID = strtok(NULL, "*");
-                    char *groupID = strtok(NULL, "*");
+                    char *spaceID = strtok(NULL, "*");
                     printf("code : %s\n", code);
                     printf("userID : %s\n", userID);
-                    printf("groupID : %s\n", groupID);
-                    int status = out_group(userID, groupID);
+                    printf("spaceID : %s\n", spaceID);
+                    int status = out_space(userID, spaceID);
                     printf("status : %d\n", status);
 
                     if (status == 0)
@@ -463,19 +440,19 @@ void *connection_handler(void *client_socket)
                     }
                     break;
                 }
-                case REMOVE_FILE:
+                case FN_REMOVE_FILE:
                     remove_res(socket);
                     break;
-                case UPLOAD_FILE:
+                case FN_UPLOAD_FILE:
                     write_file(socket);
                     break;
-                case DOWNLOAD_FILE:
+                case FN_DOWNLOAD_FILE:
                     download_file_res(socket);
                     break;
-                case CREATE_DIR:
+                case FN_CREATE_DIR:
                     makedir_res(socket);
                     break;
-                case REMOVE_DIR:
+                case FN_REMOVE_DIR:
                     removedir_res(socket);
                     break;
 
@@ -498,7 +475,7 @@ int main(int argc, const char *argv[])
 {
     if( argc < 2)
     {
-        printf("Enter port pleaseeeee \n");
+        printf("Enter port please !!! \n");
     }
     int port = atoi(argv[1]);
     int server_socket;

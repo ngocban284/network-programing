@@ -16,31 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `network_group`
+-- Table structure for table `network_space`
 --
 
-DROP TABLE IF EXISTS `network_group`;
+DROP TABLE IF EXISTS `network_space`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `network_group` (
-  `GroupID` int NOT NULL AUTO_INCREMENT,
-  `GroupName` varchar(255) NOT NULL,
-  `GroupDescription` varchar(255) NOT NULL,
+CREATE TABLE `network_space` (
+  `SpaceID` int NOT NULL AUTO_INCREMENT,
+  `SpaceName` varchar(255) NOT NULL,
+  `SpaceDescription` varchar(255) NOT NULL,
   `UserID` int NOT NULL,
-  PRIMARY KEY (`GroupID`),
+  PRIMARY KEY (`SpaceID`),
   KEY `UserID` (`UserID`),
-  CONSTRAINT `network_group_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `network_user` (`UserID`) ON DELETE CASCADE
+  CONSTRAINT `network_space_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `network_user` (`UserID`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `network_group`
+-- Dumping data for table `network_space`
 --
 
-LOCK TABLES `network_group` WRITE;
-/*!40000 ALTER TABLE `network_group` DISABLE KEYS */;
-INSERT INTO `network_group` VALUES (1,'Nhom1','deptrai wa',1);
-/*!40000 ALTER TABLE `network_group` ENABLE KEYS */;
+LOCK TABLES `network_space` WRITE;
+/*!40000 ALTER TABLE `network_space` DISABLE KEYS */;
+INSERT INTO `network_space` VALUES (1,'BackAVuong','Space Share Data',1);
+/*!40000 ALTER TABLE `network_space` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -65,7 +65,7 @@ CREATE TABLE `network_user` (
 
 LOCK TABLES `network_user` WRITE;
 /*!40000 ALTER TABLE `network_user` DISABLE KEYS */;
-INSERT INTO `network_user` VALUES (1,'haha','haha@gmail.com','haha'),(2,'admin','admin@gmail.com','admin');
+INSERT INTO `network_user` VALUES (1,'admin','admin@gmail.com','123456'),(2,'guest','guest@gmail.com','123456');
 /*!40000 ALTER TABLE `network_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,11 +93,12 @@ CREATE TABLE `share_file` (
 -- Dumping data for table `share_file`
 --
 
-LOCK TABLES `share_file` WRITE;
-/*!40000 ALTER TABLE `share_file` DISABLE KEYS */;
-INSERT INTO `share_file` VALUES (1,'Apocalypse.mp4',1,1),(2,'client.c',2,1);
-/*!40000 ALTER TABLE `share_file` ENABLE KEYS */;
-UNLOCK TABLES;
+-- *irene
+-- LOCK TABLES `share_file` WRITE;
+-- /*!40000 ALTER TABLE `share_file` DISABLE KEYS */;
+-- INSERT INTO `share_file` VALUES (1,'Apocalypse.mp4',1,1),(2,'client.c',2,1);
+-- /*!40000 ALTER TABLE `share_file` ENABLE KEYS */;
+-- UNLOCK TABLES;
 
 --
 -- Table structure for table `share_folder`
@@ -110,12 +111,12 @@ CREATE TABLE `share_folder` (
   `FolderID` int NOT NULL AUTO_INCREMENT,
   `FolderName` varchar(255) NOT NULL,
   `UserID` int NOT NULL,
-  `GroupID` int NOT NULL,
+  `SpaceID` int NOT NULL,
   PRIMARY KEY (`FolderID`),
   KEY `UserID` (`UserID`),
-  KEY `GroupID` (`GroupID`),
+  KEY `SpaceID` (`SpaceID`),
   CONSTRAINT `share_folder_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `network_user` (`UserID`) ON DELETE CASCADE,
-  CONSTRAINT `share_folder_ibfk_2` FOREIGN KEY (`GroupID`) REFERENCES `network_group` (`GroupID`) ON DELETE CASCADE
+  CONSTRAINT `share_folder_ibfk_2` FOREIGN KEY (`SpaceID`) REFERENCES `network_space` (`SpaceID`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -123,38 +124,40 @@ CREATE TABLE `share_folder` (
 -- Dumping data for table `share_folder`
 --
 
-LOCK TABLES `share_folder` WRITE;
-/*!40000 ALTER TABLE `share_folder` DISABLE KEYS */;
-INSERT INTO `share_folder` VALUES (1,'root',1,1);
-/*!40000 ALTER TABLE `share_folder` ENABLE KEYS */;
-UNLOCK TABLES;
+-- *irene
+-- LOCK TABLES `share_folder` WRITE;
+-- /*!40000 ALTER TABLE `share_folder` DISABLE KEYS */;
+-- INSERT INTO `share_folder` VALUES (1,'root',1,1);
+-- /*!40000 ALTER TABLE `share_folder` ENABLE KEYS */;
+-- UNLOCK TABLES;
 
 --
--- Table structure for table `share_group`
+-- Table structure for table `share_space`
 --
 
-DROP TABLE IF EXISTS `share_group`;
+DROP TABLE IF EXISTS `share_space`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `share_group` (
+CREATE TABLE `share_space` (
   `UserID` int NOT NULL,
-  `GroupID` int NOT NULL,
+  `SpaceID` int NOT NULL,
   KEY `UserID` (`UserID`),
-  KEY `GroupID` (`GroupID`),
-  CONSTRAINT `share_group_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `network_user` (`UserID`) ON DELETE CASCADE,
-  CONSTRAINT `share_group_ibfk_2` FOREIGN KEY (`GroupID`) REFERENCES `network_group` (`GroupID`) ON DELETE CASCADE
+  KEY `SpaceID` (`SpaceID`),
+  CONSTRAINT `share_space_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `network_user` (`UserID`) ON DELETE CASCADE,
+  CONSTRAINT `share_space_ibfk_2` FOREIGN KEY (`SpaceID`) REFERENCES `network_space` (`SpaceID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `share_group`
+-- Dumping data for table `share_space`
 --
 
-LOCK TABLES `share_group` WRITE;
-/*!40000 ALTER TABLE `share_group` DISABLE KEYS */;
-INSERT INTO `share_group` VALUES (1,1),(2,1);
-/*!40000 ALTER TABLE `share_group` ENABLE KEYS */;
-UNLOCK TABLES;
+-- *irene
+-- LOCK TABLES `share_space` WRITE;
+-- /*!40000 ALTER TABLE `share_space` DISABLE KEYS */;
+-- INSERT INTO `share_space` VALUES (1,1),(2,1);
+-- /*!40000 ALTER TABLE `share_space` ENABLE KEYS */;
+-- UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
