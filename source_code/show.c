@@ -124,10 +124,10 @@ char *show_profile(char *userID, char *temp)
     return temp;
 }
 
-char *checkPermission(char *userID, char *groupID)
+char *checkPermission(char *userID, char *spaceID)
 {
     printf("userID: %s\n", userID);
-    printf("groupID: %s\n", groupID);
+    printf("spaceID: %s\n", spaceID);
     char *query = (char *)malloc(255 * sizeof(char));
     MYSQL *sql = mysql_init(NULL);
     if (sql == NULL)
@@ -142,7 +142,7 @@ char *checkPermission(char *userID, char *groupID)
         mysql_close(sql);
         return "0";
     }
-    sprintf(query, "SELECT UserID FROM share_group where GroupID = \"%s\" ", groupID);
+    sprintf(query, "SELECT UserID FROM share_space where SpaceID = \"%s\" ", spaceID);
 
     if (mysql_query(sql, query) == 1)
     {
@@ -171,7 +171,7 @@ char *checkPermission(char *userID, char *groupID)
     return "0";
 }
 
-char *list_member(char *userID, char *groupID, char *temp)
+char *list_member(char *userID, char *spaceID, char *temp)
 {
     char *permission = (char *)malloc(10 * sizeof(char));
     strcpy(permission, "0");
@@ -192,7 +192,7 @@ char *list_member(char *userID, char *groupID, char *temp)
     char *query = (char *)malloc(255 * sizeof(char));
     char *query1 = (char *)malloc(255 * sizeof(char));
 
-    sprintf(query, "SELECT UserID FROM share_group where GroupID = \"%s\" ", groupID);
+    sprintf(query, "SELECT UserID FROM share_space where SpaceID = \"%s\" ", spaceID);
 
     if (mysql_query(sql, query) == 1)
     {
@@ -218,7 +218,7 @@ char *list_member(char *userID, char *groupID, char *temp)
             MYSQL_ROW row11;
 
             printf("-------- Tra ve list member----------\n");
-            strcpy(temp, groupID);
+            strcpy(temp, spaceID);
             long k = result->row_count;
             printf("row count = %ld\n", k);
             strcat(temp, "*");
@@ -236,7 +236,7 @@ char *list_member(char *userID, char *groupID, char *temp)
                     strcpy(permission, "1");
                 }
                 sprintf(query1, "SELECT UserID, UserName, Email FROM network_user WHERE UserID = \" %s\"", row[i]);
-                // sprintf(query1, "SELECT GroupID FROM share_group  where UserID = 12 and GroupID not in (SELECT GroupID FROM network_group  where UserID = 12)" );
+                // sprintf(query1, "SELECT SpaceID FROM share_space  where UserID = 12 and SpaceID not in (SELECT SpaceID FROM network_space  where UserID = 12)" );
                 mysql_query(sql, query1);
                 result1 = mysql_store_result(sql);
                 while ((row1 = mysql_fetch_row(result1)) != NULL)
@@ -265,7 +265,7 @@ char *list_member(char *userID, char *groupID, char *temp)
     }
     return temp;
 }
-char *list_folder(char *userID, char *groupID, char *temp)
+char *list_folder(char *userID, char *spaceID, char *temp)
 {
     MYSQL *sql = mysql_init(NULL);
     strcpy(temp, "0");
@@ -282,7 +282,7 @@ char *list_folder(char *userID, char *groupID, char *temp)
         return temp;
     }
     char *query = (char *)malloc(255 * sizeof(char));
-    sprintf(query, "SELECT f.FolderName, u.UserName FROM share_folder as f, network_user as u where f.UserID = u.UserID AND GroupID = \"%s\" ", groupID);
+    sprintf(query, "SELECT f.FolderName, u.UserName FROM share_folder as f, network_user as u where f.UserID = u.UserID AND SpaceID = \"%s\" ", spaceID);
     if (mysql_query(sql, query) == 1)
     {
         fprintf(stderr, "%s\n", mysql_error(sql));
@@ -305,7 +305,7 @@ char *list_folder(char *userID, char *groupID, char *temp)
             MYSQL_ROW row;
 
             printf("-------- Tra ve list folder----------\n");
-            strcpy(temp, groupID);
+            strcpy(temp, spaceID);
             long k = result->row_count;
             strcat(temp, "*");
             printf("temp : %s\n", temp);
@@ -327,17 +327,17 @@ char *list_folder(char *userID, char *groupID, char *temp)
     }
 
     mysql_close(sql);
-    char *permission = checkPermission(userID, groupID);
+    char *permission = checkPermission(userID, spaceID);
     if(strcmp(permission, "0") == 0) {
         return permission;
     }
     return temp;    
 }
 
-char *list_file(char *userID, char *groupID, char *temp)
+char *list_file(char *userID, char *spaceID, char *temp)
 {   
     strcpy(temp, "0");
-    char *permission = checkPermission(userID, groupID);
+    char *permission = checkPermission(userID, spaceID);
         printf("permission: %s\n", permission);
     if(strcmp(permission, "0") == 0) {
         return permission;
@@ -358,7 +358,7 @@ char *list_file(char *userID, char *groupID, char *temp)
     char *query = (char *)malloc(255 * sizeof(char));
     char *query1 = (char *)malloc(255 * sizeof(char));
 
-    sprintf(query, "SELECT FolderName FROM share_folder where GroupID = \"%s\" ", groupID);
+    sprintf(query, "SELECT FolderName FROM share_folder where SpaceID = \"%s\" ", spaceID);
 
     if (mysql_query(sql, query) == 1)
     {
@@ -403,7 +403,7 @@ char *list_file(char *userID, char *groupID, char *temp)
             else
             {
                 result1 = mysql_store_result(sql);
-                strcpy(temp, groupID);
+                strcpy(temp, spaceID);
                 long k = result1->row_count;
                 printf("check result1 -> row_count : %ld\n", result1->row_count);
                 strcat(temp, "*");

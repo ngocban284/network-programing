@@ -21,10 +21,10 @@
 #include "user.h"
 #include "define.h"
 
-int access_group(char *groupID, char *userID);
-int access_share_group(char *groupID, char *userID);
-char *my_group(char *userID, char *temp);
-char *shareGroup(char *userID, char *temp);
-int create_group(char *userID, char *groupName, char *groupDescrp);
-int delete_group(char *groupID);
-int out_group(char *userID, char *groupID);
+int access_space(char *spaceID, char *userID);
+int access_share_space(char *spaceID, char *userID);
+char *my_space(char *userID, char *temp);
+char *shareSpace(char *userID, char *temp);
+int create_space(char *userID, char *spaceName, char *spaceDescrp);
+int delete_space(char *spaceID);
+int out_space(char *userID, char *spaceID);

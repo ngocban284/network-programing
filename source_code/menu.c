@@ -40,7 +40,7 @@ void home_page(){
     printf(COLOR_BLUE"_________________________________________________________________________________\n"COLOR_RESET);
 }
 void admin_page(){
-    printf(COLOR_BLUE"\n__________________________________MY GROUP PAGE________________________________\n"COLOR_RESET);
+    printf(COLOR_BLUE"\n__________________________________MY SPACE PAGE________________________________\n"COLOR_RESET);
     printf("\n");
     printf("\t\t\t1. Member info.\n");
     printf("\t\t\t2. List folder.\n");
@@ -56,8 +56,8 @@ void admin_page(){
     printf("\t\t\t12. Back\n");
     printf(COLOR_BLUE"________________________________________________________________________________________\n"COLOR_RESET);
 }
-void share_group_page(){
-    printf(COLOR_BLUE"\n___________________________________GROUP SHARE PAGE_____________________________\n\n"COLOR_RESET);
+void share_space_page(){
+    printf(COLOR_BLUE"\n___________________________________SPACE SHARE PAGE_____________________________\n\n"COLOR_RESET);
     printf("\t\t\t1. Member info.\n");
     printf("\t\t\t2. List folder.\n");
     printf("\t\t\t3. List file.\n");

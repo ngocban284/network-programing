@@ -6,29 +6,6 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <unistd.h>
-
-#define SIGN_IN "0"
-#define SIGN_UP "1"
-#define PROFILE "2"
-#define MY_GROUP "3"
-#define ACCESS_GROUP "4"
-#define CREATE_GROUP "5"
-#define LIST_MEMBER "7"
-#define SHARE_GROUP "6"
-#define ADD_MEMBER "8"
-#define DELETE_MEMBER "9"
-#define DELETE_GROUP "10"
-#define CREATE_DIR "11"
-#define REMOVE_DIR "12"
-#define UPLOAD_FILE "13"
-#define DOWNLOAD_FILE "14"
-#define REMOVE_FILE "15"
-#define OUT_GROUP "16"
-#define ACCESS_SHARE_GROUP "17"
-#define LIST_FOLDER "18"
-#define LIST_FILE "19"
-#define LIST_ALL_USER "20"
-
 #include "define.h"
 #include "menu.h"
 #include "file.h"
@@ -36,7 +13,7 @@
 #include "user.h"
 #include "folder.h"
 #include "show.h"
-#include "group.h"
+#include "space.h"
 
 int main(int argc, const char *argv[])
 {
@@ -44,7 +21,7 @@ int main(int argc, const char *argv[])
     int network_socket;
     if (argc < 2)
     {
-        printf("Enter port pleaseeeee \n");
+        printf("Enter port please \n");
     }
     int port = atoi(argv[1]);
     // specify an address for the socket
@@ -209,30 +186,30 @@ int main(int argc, const char *argv[])
                         case 3:
                         {
 
-                            char mes_send_myGroup[1024] = {0};
-                            char mes_recv_myGroup[1024] = {0};
-                            strcpy(mes_send_myGroup, MY_GROUP);
-                            strcat(mes_send_myGroup, "*");
-                            strcat(mes_send_myGroup, constUserID);
+                            char mes_send_mySpace[1024] = {0};
+                            char mes_recv_mySpace[1024] = {0};
+                            strcpy(mes_send_mySpace, MY_SPACE);
+                            strcat(mes_send_mySpace, "*");
+                            strcat(mes_send_mySpace, constUserID);
 
-                            send(network_socket, mes_send_myGroup, sizeof(mes_send_myGroup), 0);
-                            memset(mes_send_myGroup, '\0', (strlen(mes_send_myGroup) + 1));
-                            read_len = recv(network_socket, mes_recv_myGroup, sizeof(mes_recv_myGroup), 0);
-                            mes_recv_myGroup[read_len] = '\0';
-                            if (strcmp(mes_recv_myGroup, "0") == 0)
+                            send(network_socket, mes_send_mySpace, sizeof(mes_send_mySpace), 0);
+                            memset(mes_send_mySpace, '\0', (strlen(mes_send_mySpace) + 1));
+                            read_len = recv(network_socket, mes_recv_mySpace, sizeof(mes_recv_mySpace), 0);
+                            mes_recv_mySpace[read_len] = '\0';
+                            if (strcmp(mes_recv_mySpace, "0") == 0)
                             {
                                 printf(COLOR_RED "You have not any space\n" COLOR_RESET);
                             }
                             else
                             {
-                                userID = strtok(mes_recv_myGroup, "*");
+                                userID = strtok(mes_recv_mySpace, "*");
                                 char *length1 = strtok(NULL, "*");
                                 int size = atoi(length1);
-                                char listGroup[size][255];
+                                char listSpace[size][255];
                                 char *p;
                                 int j = 0;
                                 p = strtok(NULL, "*");
-                                strcpy(&listGroup[j][255], p);
+                                strcpy(&listSpace[j][255], p);
                                 while (p != NULL)
                                 {
                                     j++;
@@ -241,17 +218,17 @@ int main(int argc, const char *argv[])
                                     {
                                         break;
                                     }
-                                    strcpy(&(listGroup[j][255]), p);
+                                    strcpy(&(listSpace[j][255]), p);
                                 }
 
                                 printf(COLOR_BLUE "____________________________MY SPACE______________________________\n");
-                                // printf("\nSTT\t| Group Name\t\t\t| Description\t\t| Group ID\n");
+                                // printf("\nSTT\t| Space Name\t\t\t| Description\t\t| Space ID\n");
                                 printf("%-11s| %-26s | %-21s | %-3s \n", "STT", "SpaceName", "Description", "SpaceID");
                                 printf("____________________________________________________________________\n\n" COLOR_RESET);
                                 int k = 0;
                                 for (int i = 0; i < (atoi(length1) * 3); i += 3)
                                 {
-                                    printf("%-11d| %-26s | %-21s | %-3s \n", k + 1, &listGroup[i][255], &listGroup[i + 1][255], &listGroup[i + 2][255]);
+                                    printf("%-11d| %-26s | %-21s | %-3s \n", k + 1, &listSpace[i][255], &listSpace[i + 1][255], &listSpace[i + 2][255]);
                                     k++;
                                 }
                                 printf(COLOR_BLUE "____________________________________________________________________\n\n" COLOR_RESET);
@@ -261,22 +238,22 @@ int main(int argc, const char *argv[])
                                 getchar();
                                 if (strcmp(input, "y") == 0 || strcmp(input, "Y") == 0)
                                 {
-                                    char groupID[5];
+                                    char spaceID[5];
                                     printf("Enter ID space : ");
-                                    scanf("%[^\n]", groupID);
+                                    scanf("%[^\n]", spaceID);
                                     getchar();
-                                    char mes_send_group_id[BUFF_SIZE];
-                                    char mes_recv_group_id[BUFF_SIZE];
-                                    strcpy(mes_send_group_id, ACCESS_GROUP);
-                                    strcat(mes_send_group_id, "*");
-                                    strcat(mes_send_group_id, groupID);
-                                    strcat(mes_send_group_id, "*");
-                                    strcat(mes_send_group_id, constUserID);
-                                    send(network_socket, mes_send_group_id, sizeof(mes_send_group_id), 0);
-                                    memset(mes_send_group_id, '\0', (strlen(mes_send_group_id) + 1));
-                                    read_len = recv(network_socket, mes_recv_group_id, sizeof(mes_recv_group_id), 0);
-                                    mes_recv_myGroup[read_len] = '\0';
-                                    int check = atoi(mes_recv_group_id);
+                                    char mes_send_space_id[BUFF_SIZE];
+                                    char mes_recv_space_id[BUFF_SIZE];
+                                    strcpy(mes_send_space_id, ACCESS_SPACE);
+                                    strcat(mes_send_space_id, "*");
+                                    strcat(mes_send_space_id, spaceID);
+                                    strcat(mes_send_space_id, "*");
+                                    strcat(mes_send_space_id, constUserID);
+                                    send(network_socket, mes_send_space_id, sizeof(mes_send_space_id), 0);
+                                    memset(mes_send_space_id, '\0', (strlen(mes_send_space_id) + 1));
+                                    read_len = recv(network_socket, mes_recv_space_id, sizeof(mes_recv_space_id), 0);
+                                    mes_recv_mySpace[read_len] = '\0';
+                                    int check = atoi(mes_recv_space_id);
                                     // printf("check result : %d\n", check);
                                     if (check == 0)
                                     {
@@ -303,11 +280,11 @@ int main(int argc, const char *argv[])
                                                 char mes_recv_list_member[BUFF_SIZE] = {0};
                                                 strcpy(mes_send_list_member, LIST_MEMBER);
                                                 strcat(mes_send_list_member, "*");
-                                                strcat(mes_send_list_member, groupID);
+                                                strcat(mes_send_list_member, spaceID);
                                                 strcat(mes_send_list_member, "*");
                                                 strcat(mes_send_list_member, constUserID);
                                                 send(network_socket, mes_send_list_member, sizeof(mes_send_list_member), 0);
-                                                memset(mes_send_group_id, '\0', (strlen(mes_send_group_id) + 1));
+                                                memset(mes_send_space_id, '\0', (strlen(mes_send_space_id) + 1));
                                                 read_len = recv(network_socket, mes_recv_list_member, sizeof(mes_recv_list_member), 0);
                                                 mes_recv_list_member[read_len] = '\0';
                                                 if (strcmp(mes_recv_list_member, "0") == 0)
@@ -364,7 +341,7 @@ int main(int argc, const char *argv[])
                                                 char mes_recv_list_folder[BUFF_SIZE] = {0};
                                                 strcpy(mes_send_list_folder, LIST_FOLDER);
                                                 strcat(mes_send_list_folder, "*");
-                                                strcat(mes_send_list_folder, groupID);
+                                                strcat(mes_send_list_folder, spaceID);
                                                 strcat(mes_send_list_folder, "*");
                                                 strcat(mes_send_list_folder, constUserID);
                                                 send(network_socket, mes_send_list_folder, sizeof(mes_send_list_folder), 0);
@@ -427,7 +404,7 @@ int main(int argc, const char *argv[])
                                                 char mes_recv_list_file[BUFF_SIZE] = {0};
                                                 strcpy(mes_send_list_file, LIST_FILE);
                                                 strcat(mes_send_list_file, "*");
-                                                strcat(mes_send_list_file, groupID);
+                                                strcat(mes_send_list_file, spaceID);
                                                 strcat(mes_send_list_file, "*");
                                                 strcat(mes_send_list_file, constUserID);
                                                 send(network_socket, mes_send_list_file, sizeof(mes_send_list_file), 0);
@@ -551,7 +528,7 @@ int main(int argc, const char *argv[])
                                             case 9:
                                             {
 
-                                                // printf("check groupID : %s\n", groupID);
+                                                // printf("check spaceID : %s\n", spaceID);
                                                 char mes_send_add_member[255] = {0};
                                                 char mes_recv_add_member[255] = {0};
                                                 char email[255];
@@ -562,7 +539,7 @@ int main(int argc, const char *argv[])
                                                 strcat(mes_send_add_member, "*");
                                                 strcat(mes_send_add_member, email);
                                                 strcat(mes_send_add_member, "*");
-                                                strcat(mes_send_add_member, groupID);
+                                                strcat(mes_send_add_member, spaceID);
                                                 send(network_socket, mes_send_add_member, sizeof(mes_send_add_member), 0);
                                                 memset(mes_send_add_member, '\0', (strlen(mes_send_add_member) + 1));
                                                 read_len = recv(network_socket, mes_recv_add_member, sizeof(mes_recv_add_member), 0);
@@ -596,7 +573,7 @@ int main(int argc, const char *argv[])
                                                 strcat(mes_send_del_member, "*");
                                                 strcat(mes_send_del_member, email);
                                                 strcat(mes_send_del_member, "*");
-                                                strcat(mes_send_del_member, groupID);
+                                                strcat(mes_send_del_member, spaceID);
                                                 send(network_socket, mes_send_del_member, sizeof(mes_send_del_member), 0);
                                                 memset(mes_send_del_member, '\0', (strlen(mes_send_del_member) + 1));
                                                 read_len = recv(network_socket, mes_recv_del_member, sizeof(mes_recv_del_member), 0);
@@ -620,8 +597,8 @@ int main(int argc, const char *argv[])
                                             case 11:
                                             {
 
-                                                char mes_send_del_group[255] = {0};
-                                                char mes_recv_del_group[255] = {0};
+                                                char mes_send_del_space[255] = {0};
+                                                char mes_recv_del_space[255] = {0};
                                                 char sureDel[255];
                                                 printf("Are you sure you want to delete this space?");
                                                 printf("Enter y( or Y)/ NO (any key) : ");
@@ -630,14 +607,14 @@ int main(int argc, const char *argv[])
                                                 if (strcmp(sureDel, "y") == 0 || strcmp(sureDel, "Y") == 0)
                                                 {
 
-                                                    strcpy(mes_send_del_group, DELETE_GROUP);
-                                                    strcat(mes_send_del_group, "*");
-                                                    strcat(mes_send_del_group, groupID);
-                                                    send(network_socket, mes_send_del_group, sizeof(mes_send_del_group), 0);
-                                                    memset(mes_send_del_group, '\0', (strlen(mes_send_del_group) + 1));
-                                                    read_len = recv(network_socket, mes_recv_del_group, sizeof(mes_recv_del_group), 0);
-                                                    mes_recv_del_group[read_len] = '\0';
-                                                    int check = atoi(mes_recv_del_group);
+                                                    strcpy(mes_send_del_space, DELETE_SPACE);
+                                                    strcat(mes_send_del_space, "*");
+                                                    strcat(mes_send_del_space, spaceID);
+                                                    send(network_socket, mes_send_del_space, sizeof(mes_send_del_space), 0);
+                                                    memset(mes_send_del_space, '\0', (strlen(mes_send_del_space) + 1));
+                                                    read_len = recv(network_socket, mes_recv_del_space, sizeof(mes_recv_del_space), 0);
+                                                    mes_recv_del_space[read_len] = '\0';
+                                                    int check = atoi(mes_recv_del_space);
                                                     printf("check result : %d\n", check);
                                                     if (check == 0)
                                                     {
@@ -671,31 +648,31 @@ int main(int argc, const char *argv[])
                         }
                         case 4:
                         {
-                            char mes_send_myShareGroup[1024] = {0};
-                            char mes_recv_myShareGroup[1024] = {0};
-                            strcpy(mes_send_myShareGroup, SHARE_GROUP);
-                            strcat(mes_send_myShareGroup, "*");
-                            strcat(mes_send_myShareGroup, constUserID);
+                            char mes_send_myShareSpace[1024] = {0};
+                            char mes_recv_myShareSpace[1024] = {0};
+                            strcpy(mes_send_myShareSpace, SHARE_SPACE);
+                            strcat(mes_send_myShareSpace, "*");
+                            strcat(mes_send_myShareSpace, constUserID);
 
-                            send(network_socket, mes_send_myShareGroup, sizeof(mes_send_myShareGroup), 0);
-                            memset(mes_send_myShareGroup, '\0', (strlen(mes_send_myShareGroup) + 1));
+                            send(network_socket, mes_send_myShareSpace, sizeof(mes_send_myShareSpace), 0);
+                            memset(mes_send_myShareSpace, '\0', (strlen(mes_send_myShareSpace) + 1));
 
-                            read_len = recv(network_socket, mes_recv_myShareGroup, sizeof(mes_recv_myShareGroup), 0);
+                            read_len = recv(network_socket, mes_recv_myShareSpace, sizeof(mes_recv_myShareSpace), 0);
                             //  printf("read_len : %d\n", read_len);
-                            mes_recv_myShareGroup[read_len] = '\0';
+                            mes_recv_myShareSpace[read_len] = '\0';
 
-                            if (strcmp(mes_recv_myShareGroup, "0") == 0) {
+                            if (strcmp(mes_recv_myShareSpace, "0") == 0) {
                                 printf(COLOR_RED "No space found \n" COLOR_RESET);
                             } else {
                                 // do nothing
-                                userID = strtok(mes_recv_myShareGroup, "*");
+                                userID = strtok(mes_recv_myShareSpace, "*");
                                 char *length1 = strtok(NULL, "*");
                                 int length = atoi(length1);
-                                char listGroup[length][255];
+                                char listSpace[length][255];
                                 char *p;
                                 int j = 0;
                                 p = strtok(NULL, "*");
-                                strcpy(&listGroup[j][255], p);
+                                strcpy(&listSpace[j][255], p);
                                 while (p != NULL)
                                 {
                                     j++;
@@ -704,17 +681,17 @@ int main(int argc, const char *argv[])
                                     {
                                         break;
                                     }
-                                    strcpy(&(listGroup[j][255]), p);
+                                    strcpy(&(listSpace[j][255]), p);
                                 }
                                 printf(COLOR_BLUE "____________________________MY SHARE Space____________________________\n" COLOR_RESET);
-                                // printf("STT\t|Group ID\t\t|\tGroupName\t\n");
+                                // printf("STT\t|Space ID\t\t|\tSpaceName\t\n");
                                 printf("%-11s|  %-13s |\t%-22s\n", "STT", "SpaceID", "SpaceName");
                                 printf(COLOR_BLUE "__________________________________________________________________\n" COLOR_RESET);
                                 int k = 0;
                                 for (int i = 0; i < (length * 2); i += 2)
                                 {
 
-                                    printf("%-11d|  %-13s |\t%-22s\n", k + 1, &listGroup[i][255], &listGroup[i + 1][255]);
+                                    printf("%-11d|  %-13s |\t%-22s\n", k + 1, &listSpace[i][255], &listSpace[i + 1][255]);
                                     k++;
                                 }
                                 printf(COLOR_BLUE "__________________________________________________________________\n" COLOR_RESET);
@@ -724,23 +701,23 @@ int main(int argc, const char *argv[])
                                 getchar();
                                 if (strcmp(input, "y") == 0 || strcmp(input, "Y") == 0)
                                 {
-                                    char groupID[5];
+                                    char spaceID[5];
                                     printf("Enter ID space: ");
-                                    scanf("%[^\n]", groupID);
+                                    scanf("%[^\n]", spaceID);
                                     getchar();
-                                    char mes_send_group_id[255];
-                                    char mes_recv_group_id[255];
-                                    strcpy(mes_send_group_id, ACCESS_SHARE_GROUP);
-                                    strcat(mes_send_group_id, "*");
-                                    strcat(mes_send_group_id, groupID);
-                                    strcat(mes_send_group_id, "*");
-                                    strcat(mes_send_group_id, constUserID);
-                                    // printf("check mes send : %s\n", mes_send_group_id);
-                                    send(network_socket, mes_send_group_id, sizeof(mes_send_group_id), 0);
-                                    memset(mes_send_group_id, '\0', (strlen(mes_send_group_id) + 1));
-                                    read_len = recv(network_socket, mes_recv_group_id, sizeof(mes_recv_group_id), 0);
-                                    mes_recv_myShareGroup[read_len] = '\0';
-                                    int check = atoi(mes_recv_group_id);
+                                    char mes_send_space_id[255];
+                                    char mes_recv_space_id[255];
+                                    strcpy(mes_send_space_id, ACCESS_SHARE_SPACE);
+                                    strcat(mes_send_space_id, "*");
+                                    strcat(mes_send_space_id, spaceID);
+                                    strcat(mes_send_space_id, "*");
+                                    strcat(mes_send_space_id, constUserID);
+                                    // printf("check mes send : %s\n", mes_send_space_id);
+                                    send(network_socket, mes_send_space_id, sizeof(mes_send_space_id), 0);
+                                    memset(mes_send_space_id, '\0', (strlen(mes_send_space_id) + 1));
+                                    read_len = recv(network_socket, mes_recv_space_id, sizeof(mes_recv_space_id), 0);
+                                    mes_recv_myShareSpace[read_len] = '\0';
+                                    int check = atoi(mes_recv_space_id);
                                     // printf("check result : %d\n", check);
                                     if (check == 0)
                                     {
@@ -752,7 +729,7 @@ int main(int argc, const char *argv[])
                                         do
                                         {
 
-                                            share_group_page();
+                                            share_space_page();
 
                                             printf(COLOR_GREEN "Your choose : " COLOR_RESET);
                                             scanf("%d", &choose2);
@@ -766,11 +743,11 @@ int main(int argc, const char *argv[])
                                                 char mes_recv_list_member[BUFF_SIZE] = {0};
                                                 strcpy(mes_send_list_member, LIST_MEMBER);
                                                 strcat(mes_send_list_member, "*");
-                                                strcat(mes_send_list_member, groupID);
+                                                strcat(mes_send_list_member, spaceID);
                                                 strcat(mes_send_list_member, "*");
                                                 strcat(mes_send_list_member, constUserID);
                                                 send(network_socket, mes_send_list_member, sizeof(mes_send_list_member), 0);
-                                                memset(mes_send_group_id, '\0', (strlen(mes_send_group_id) + 1));
+                                                memset(mes_send_space_id, '\0', (strlen(mes_send_space_id) + 1));
                                                 read_len = recv(network_socket, mes_recv_list_member, sizeof(mes_recv_list_member), 0);
 
                                                 mes_recv_list_member[read_len] = '\0';
@@ -831,7 +808,7 @@ int main(int argc, const char *argv[])
                                                 char mes_recv_list_folder[1024] = {0};
                                                 strcpy(mes_send_list_folder, LIST_FOLDER);
                                                 strcat(mes_send_list_folder, "*");
-                                                strcat(mes_send_list_folder, groupID);
+                                                strcat(mes_send_list_folder, spaceID);
                                                 strcat(mes_send_list_folder, "*");
                                                 strcat(mes_send_list_folder, constUserID);
                                                 send(network_socket, mes_send_list_folder, sizeof(mes_send_list_folder), 0);
@@ -892,7 +869,7 @@ int main(int argc, const char *argv[])
                                                 char mes_recv_list_file[1024] = {0};
                                                 strcpy(mes_send_list_file, LIST_FILE);
                                                 strcat(mes_send_list_file, "*");
-                                                strcat(mes_send_list_file, groupID);
+                                                strcat(mes_send_list_file, spaceID);
                                                 strcat(mes_send_list_file, "*");
                                                 strcat(mes_send_list_file, constUserID);
                                                 send(network_socket, mes_send_list_file, sizeof(mes_send_list_file), 0);
@@ -1005,8 +982,8 @@ int main(int argc, const char *argv[])
                                             case 8:
                                             {
 
-                                                char mes_send_out_group[255] = {0};
-                                                char mes_recv_out_group[255] = {0};
+                                                char mes_send_out_space[255] = {0};
+                                                char mes_recv_out_space[255] = {0};
                                                 char sureOut[255];
                                                 printf("Do you want to leave this space?");
                                                 printf("Enter y( or Y)/ NO (any key) : ");
@@ -1014,16 +991,16 @@ int main(int argc, const char *argv[])
                                                 getchar();
                                                 if (strcmp(sureOut, "y") == 0 || strcmp(sureOut, "Y") == 0)
                                                 {
-                                                    strcpy(mes_send_out_group, OUT_GROUP);
-                                                    strcat(mes_send_out_group, "*");
-                                                    strcat(mes_send_out_group, constUserID);
-                                                    strcat(mes_send_out_group, "*");
-                                                    strcat(mes_send_out_group, groupID);
-                                                    send(network_socket, mes_send_out_group, sizeof(mes_send_out_group), 0);
-                                                    memset(mes_send_out_group, '\0', (strlen(mes_send_out_group) + 1));
-                                                    read_len = recv(network_socket, mes_recv_out_group, sizeof(mes_recv_out_group), 0);
-                                                    mes_recv_out_group[read_len] = '\0';
-                                                    int check = atoi(mes_recv_out_group);
+                                                    strcpy(mes_send_out_space, OUT_SPACE);
+                                                    strcat(mes_send_out_space, "*");
+                                                    strcat(mes_send_out_space, constUserID);
+                                                    strcat(mes_send_out_space, "*");
+                                                    strcat(mes_send_out_space, spaceID);
+                                                    send(network_socket, mes_send_out_space, sizeof(mes_send_out_space), 0);
+                                                    memset(mes_send_out_space, '\0', (strlen(mes_send_out_space) + 1));
+                                                    read_len = recv(network_socket, mes_recv_out_space, sizeof(mes_recv_out_space), 0);
+                                                    mes_recv_out_space[read_len] = '\0';
+                                                    int check = atoi(mes_recv_out_space);
                                                     printf("check result : %d\n", check);
                                                     if (check == 0)
                                                     {
@@ -1059,39 +1036,39 @@ int main(int argc, const char *argv[])
                         case 5:
                         {
                             system("clear");
-                            char mes_send_create_group[255] = {0};
-                            char mes_recv_create_group[255] = {0};
-                            char groupName[255] = {0};
-                            char group_descrp[255] = {0};
-                            strcpy(mes_send_create_group, CREATE_GROUP);
-                            strcat(mes_send_create_group, "*");
+                            char mes_send_create_space[255] = {0};
+                            char mes_recv_create_space[255] = {0};
+                            char spaceName[255] = {0};
+                            char space_descrp[255] = {0};
+                            strcpy(mes_send_create_space, CREATE_SPACE);
+                            strcat(mes_send_create_space, "*");
                             // printf("user id test  : %s\n", userID);
-                            strcat(mes_send_create_group, constUserID);
-                            strcat(mes_send_create_group, "*");
+                            strcat(mes_send_create_space, constUserID);
+                            strcat(mes_send_create_space, "*");
 
                             printf("Enter Space Name : ");
-                            scanf("%[^\n]%*c", groupName);
-                            // ltrim(groupName);
-                            // rtrim(groupName);
+                            scanf("%[^\n]%*c", spaceName);
+                            // ltrim(spaceName);
+                            // rtrim(spaceName);
                             printf("Enter Space Description : ");
-                            scanf("%[^\n]%*c", group_descrp);
-                            // ltrim(group_descrp);
-                            // rtrim(group_descrp);
-                            strcat(mes_send_create_group, groupName);
-                            strcat(mes_send_create_group, "*");
-                            strcat(mes_send_create_group, group_descrp);
+                            scanf("%[^\n]%*c", space_descrp);
+                            // ltrim(space_descrp);
+                            // rtrim(space_descrp);
+                            strcat(mes_send_create_space, spaceName);
+                            strcat(mes_send_create_space, "*");
+                            strcat(mes_send_create_space, space_descrp);
 
-                            send(network_socket, mes_send_create_group, sizeof(mes_send_create_group), 0);
-                            memset(mes_send_create_group, '\0', (strlen(mes_send_create_group) + 1));
-                            read_len = recv(network_socket, mes_recv_create_group, sizeof(mes_recv_create_group), 0);
+                            send(network_socket, mes_send_create_space, sizeof(mes_send_create_space), 0);
+                            memset(mes_send_create_space, '\0', (strlen(mes_send_create_space) + 1));
+                            read_len = recv(network_socket, mes_recv_create_space, sizeof(mes_recv_create_space), 0);
                             // printf("read_len : %d\n", read_len);
-                            mes_recv_create_group[read_len] = '\0';
-                            // printf(" test chuoi nhan : %s\n", mes_recv_create_group);
-                            int status = atoi(mes_recv_create_group);
+                            mes_recv_create_space[read_len] = '\0';
+                            // printf(" test chuoi nhan : %s\n", mes_recv_create_space);
+                            int status = atoi(mes_recv_create_space);
                             // printf("status: %d",status);
                             if (status == 1)
                             {
-                                printf(COLOR_GREEN "Create space \"%s\" successfull !\n" COLOR_RESET, groupName);
+                                printf(COLOR_GREEN "Create space \"%s\" successfull !\n" COLOR_RESET, spaceName);
                             }
                             else if (status == 2)
                             {

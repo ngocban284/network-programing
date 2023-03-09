@@ -53,9 +53,9 @@ void makedir_res(int sockfd)
         char *UserID = strtok(token, "*");
         char *path = strtok(NULL, "*");
 
-        char *GID = get_groupid_via_foldername(con, foldername);
+        char *GID = get_spaceid_via_foldername(con, foldername);
 
-        printf("UserID : %s\nGroupID : %s\nFoldername : %s\nFolder create :%s\n", ID, GID, foldername, path);
+        printf("UserID : %s\nSpaceID : %s\nFoldername : %s\nFolder create :%s\n", ID, GID, foldername, path);
 
         int k = check_user_access(con, UserID, foldername);
         if (k == 0)
@@ -85,7 +85,7 @@ void makedir_res(int sockfd)
                     finish_with_error(con);
                 }
                 char *que = malloc(SIZE * sizeof(que));
-                sprintf(que, "INSERT INTO share_folder (Foldername,UserID,GroupID) values(\"%s\",\"%s\",\"%s\")", path, UserID, GID);
+                sprintf(que, "INSERT INTO share_folder (Foldername,UserID,SpaceID) values(\"%s\",\"%s\",\"%s\")", path, UserID, GID);
                 if (mysql_query(con, que))
                 {
                     finish_with_error(con);
@@ -254,13 +254,13 @@ void removedir_res(int sockfd)
 
         char *ID = strtok(temp, "*");
         char *foldername = strtok(NULL, "/");
-        char *GroupID = get_groupid_via_foldername(con, foldername);
+        char *SpaceID = get_spaceid_via_foldername(con, foldername);
 
         char *UserID = strtok(token, "*");
         char *path = strtok(NULL, "*");
-        printf("UserID : %s\nGroupID : %s\nFolder : %s\nRemove path : %s\n",ID, GroupID, foldername, path);
+        printf("UserID : %s\nSpaceID : %s\nFolder : %s\nRemove path : %s\n",ID, SpaceID, foldername, path);
 
-        if (isGroupAdmin(con,UserID,GroupID) == 0)
+        if (isSpaceAdmin(con,UserID,SpaceID) == 0)
         {
             strcpy(status, "Not allow to remove directory \n");
         }

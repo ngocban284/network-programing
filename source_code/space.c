@@ -1,6 +1,6 @@
-#include "group.h"
+#include "space.h"
 
-char *my_group(char *userID, char *temp)
+char *my_space(char *userID, char *temp)
 {
     MYSQL *sql = mysql_init(NULL);
     strcpy(temp, "0");
@@ -18,7 +18,7 @@ char *my_group(char *userID, char *temp)
     }
     char *query = (char *)malloc(255 * sizeof(char));
 
-    sprintf(query, "SELECT GroupName, GroupDescription, GroupID FROM network_group where UserID = \"%s\" ", userID);
+    sprintf(query, "SELECT SpaceName, SpaceDescription, SpaceID FROM network_space where UserID = \"%s\" ", userID);
     if (mysql_query(sql, query) == 1)
     {
         fprintf(stderr, "%s\n", mysql_error(sql));
@@ -74,7 +74,7 @@ char *my_group(char *userID, char *temp)
     return temp;
 }
 
-char *shareGroup(char *userID, char *temp)
+char *shareSpace(char *userID, char *temp)
 {
     MYSQL *sql = mysql_init(NULL);
     strcpy(temp, "0");
@@ -92,7 +92,7 @@ char *shareGroup(char *userID, char *temp)
     }
     char *query = (char *)malloc(200 * sizeof(char));
     char *query_check = (char *)malloc(200 * sizeof(char));
-    sprintf(query, "SELECT GroupID FROM share_group where UserID = \"%s\" and GroupID not in (SELECT GroupID FROM network_group where UserID = \"%s\" );", userID, userID);
+    sprintf(query, "SELECT SpaceID FROM share_space where UserID = \"%s\" and SpaceID not in (SELECT SpaceID FROM network_space where UserID = \"%s\" );", userID, userID);
 
     if (mysql_query(sql, query))
     {
@@ -134,14 +134,14 @@ char *shareGroup(char *userID, char *temp)
                 {
                     int i = 0;
                     printf("[%d] : %s\n", i, row[i]);
-                    sprintf(query_check, "SELECT GroupID, GroupName FROM network_group WHERE GroupID = \"%s\"", row[i]);
+                    sprintf(query_check, "SELECT SpaceID, SpaceName FROM network_space WHERE SpaceID = \"%s\"", row[i]);
                     mysql_query(sql, query_check);
                     result1 = mysql_store_result(sql);
                     while ((row1 = mysql_fetch_row(result1)) != NULL)
                     {
                         int j = 0;
-                        // printf("GroupID[%s]: %s\n",row1[j],row[j+1]);
-                        printf("GroupID: %s \t Group Name %s\n", row1[j], row1[j + 1]);
+                        // printf("SpaceID[%s]: %s\n",row1[j],row[j+1]);
+                        printf("SpaceID: %s \t Space Name %s\n", row1[j], row1[j + 1]);
                         strcat(temp, "*");
                         strcat(temp, row1[j]);
                         strcat(temp, "*");
@@ -160,7 +160,7 @@ char *shareGroup(char *userID, char *temp)
     mysql_close(sql);
     return temp;
 }
-int delete_group(char *groupID)
+int delete_space(char *spaceID)
 {
     MYSQL *sql = mysql_init(NULL);
     int state = 0;
@@ -177,7 +177,7 @@ int delete_group(char *groupID)
         mysql_close(sql);
         return state;
     }
-    char *foldername = get_foldername_via_gid(sql, groupID);
+    char *foldername = get_foldername_via_gid(sql, spaceID);
     char cmd[255];
     sprintf(cmd, "rm -rf %s", foldername);
     int k = system(cmd);
@@ -188,7 +188,7 @@ int delete_group(char *groupID)
     else
     {
         char *query = (char *)malloc(255 * sizeof(char));
-        sprintf(query, "DELETE FROM network_group WHERE GroupID = \"%s\" ", groupID);
+        sprintf(query, "DELETE FROM network_space WHERE SpaceID = \"%s\" ", spaceID);
         if (mysql_query(sql, query) == 1)
         {
             fprintf(stderr, "0 : %s\n", mysql_error(sql));
@@ -204,7 +204,7 @@ int delete_group(char *groupID)
         return state;
     }
 }
-int out_group(char *userID, char *groupID)
+int out_space(char *userID, char *spaceID)
 {
     MYSQL *sql = mysql_init(NULL);
     int state = 0;
@@ -223,7 +223,7 @@ int out_group(char *userID, char *groupID)
     }
     char *query = (char *)malloc(255 * sizeof(char));
 
-    sprintf(query, "DELETE FROM share_group WHERE GroupID = \"%s\" AND UserID = \"%s\"", groupID, userID);
+    sprintf(query, "DELETE FROM share_space WHERE SpaceID = \"%s\" AND UserID = \"%s\"", spaceID, userID);
     if (mysql_query(sql, query) == 1)
     {
         fprintf(stderr, "0 : %s\n", mysql_error(sql));
@@ -237,7 +237,7 @@ int out_group(char *userID, char *groupID)
     mysql_close(sql);
     return state;
 }
-int create_group(char *userID, char *groupName, char *groupDescrp)
+int create_space(char *userID, char *spaceName, char *spaceDescrp)
 {
     int state = 0;
     MYSQL *sql = mysql_init(NULL);
@@ -257,9 +257,9 @@ int create_group(char *userID, char *groupName, char *groupDescrp)
     char *query2 = (char *)malloc(255 * sizeof(char));
     char *query3 = (char *)malloc(255 * sizeof(char));
 
-    sprintf(query, "INSERT INTO network_group(UserID, GroupName, GroupDescription) VALUES (\"%s\",\"%s\",\"%s\")", userID, groupName, groupDescrp);
-    sprintf(query3, "SELECT * FROM network_group WHERE UserID = \"%s\" AND GroupName = \"%s\" ", userID, groupName);
-    sprintf(query1, "SELECT * FROM network_group WHERE UserID = \"%s\" AND GroupName = \"%s\" AND GroupDescription = \"%s\"", userID, groupName, groupDescrp);
+    sprintf(query, "INSERT INTO network_space(UserID, SpaceName, SpaceDescription) VALUES (\"%s\",\"%s\",\"%s\")", userID, spaceName, spaceDescrp);
+    sprintf(query3, "SELECT * FROM network_space WHERE UserID = \"%s\" AND SpaceName = \"%s\" ", userID, spaceName);
+    sprintf(query1, "SELECT * FROM network_space WHERE UserID = \"%s\" AND SpaceName = \"%s\" AND SpaceDescription = \"%s\"", userID, spaceName, spaceDescrp);
 
     if (mysql_query(sql, query3))
     {
@@ -300,32 +300,32 @@ int create_group(char *userID, char *groupName, char *groupDescrp)
                 {
                     MYSQL_ROW row;
                     int i = 0;
-                    char groupID[10];
+                    char spaceID[10];
                     while ((row = mysql_fetch_row(result)) != NULL)
                     {
                         printf("-------- tra ve create space----------\n");
                         printf("spaceID : %s\n", row[i]);
-                        strcpy(groupID, row[i]);
-                        printf("spaceID : %s\n", groupID);
+                        strcpy(spaceID, row[i]);
+                        printf("spaceID : %s\n", spaceID);
                     }
-                    sprintf(query2, "INSERT INTO share_group(UserID, GroupID) VALUES (\"%s\",\"%s\")", userID, groupID);
+                    sprintf(query2, "INSERT INTO share_space(UserID, SpaceID) VALUES (\"%s\",\"%s\")", userID, spaceID);
                     mysql_query(sql, query2);
 
                     char cmd[255];
-                    strcpy(cmd, groupName);
-                    // create folder with groupName
-                    sprintf(cmd, "mkdir \"%s\"", groupName);
+                    strcpy(cmd, spaceName);
+                    // create folder with spaceName
+                    sprintf(cmd, "mkdir \"%s\"", spaceName);
                     int check = system(cmd);
                     if (!check)
                     {
                         char *query4 = (char *)malloc(255 * sizeof(char));
-                        sprintf(query4, "INSERT INTO share_folder(FolderName,UserID,GroupID) values(\"%s\",\"%s\",\"%s\")", groupName, userID, groupID);
+                        sprintf(query4, "INSERT INTO share_folder(FolderName,UserID,SpaceID) values(\"%s\",\"%s\",\"%s\")", spaceName, userID, spaceID);
                         mysql_query(sql, query4);
-                        printf("add folder %s\n", groupName);
+                        printf("add folder %s\n", spaceName);
                     }
                     else
                     {
-                        printf("cannot create %s\n", groupName);
+                        printf("cannot create %s\n", spaceName);
                     }
 
                     state = 1;
@@ -339,7 +339,7 @@ int create_group(char *userID, char *groupName, char *groupDescrp)
     return state;
 }
 
-int access_group(char *groupID, char *userID)
+int access_space(char *spaceID, char *userID)
 {
     MYSQL *sql = mysql_init(NULL);
     int state = 0;
@@ -357,7 +357,7 @@ int access_group(char *groupID, char *userID)
         return state;
     }
     char *query = (char *)malloc(255 * sizeof(char));
-    sprintf(query, "SELECT * FROM network_group where GroupID = \"%s\" and UserID = \"%s\" ", groupID, userID);
+    sprintf(query, "SELECT * FROM network_space where SpaceID = \"%s\" and UserID = \"%s\" ", spaceID, userID);
     if (mysql_query(sql, query) == 1)
     {
         fprintf(stderr, "%s\n", mysql_error(sql));
@@ -387,7 +387,7 @@ int access_group(char *groupID, char *userID)
                 strcpy(temp, row[i]);
             }
             printf("check temp : %s\n", temp);
-            if (strcmp(temp, groupID) == 0)
+            if (strcmp(temp, spaceID) == 0)
             {
                 state = 1;
             }
@@ -398,7 +398,7 @@ int access_group(char *groupID, char *userID)
     return state;
 }
 
-int access_share_group(char *groupID, char *userID)
+int access_share_space(char *spaceID, char *userID)
 {
     MYSQL *sql = mysql_init(NULL);
     int state = 0;
@@ -415,10 +415,10 @@ int access_share_group(char *groupID, char *userID)
         mysql_close(sql);
         return state;
     }
-    printf("check spaceid : %s\n", groupID);
+    printf("check spaceid : %s\n", spaceID);
     printf("check userid : %s\n", userID);
     char *query = (char *)malloc(255 * sizeof(char));
-    sprintf(query, "SELECT * FROM share_group where GroupID = \"%s\" and UserID = \"%s\" ", groupID, userID);
+    sprintf(query, "SELECT * FROM share_space where SpaceID = \"%s\" and UserID = \"%s\" ", spaceID, userID);
     if (mysql_query(sql, query) == 1)
     {
         fprintf(stderr, "%s\n", mysql_error(sql));
@@ -448,11 +448,11 @@ int access_share_group(char *groupID, char *userID)
             while ((row = mysql_fetch_row(result)) != NULL)
             {
                 int i = 0;
-                printf("Group : %s %s\n", row[i], row[i + 1]);
+                printf("Space : %s %s\n", row[i], row[i + 1]);
                 strcpy(temp, row[i + 1]);
             }
             printf("check temp : %s\n", temp);
-            if (strcmp(temp, groupID) == 0)
+            if (strcmp(temp, spaceID) == 0)
             {
                 state = 1;
             }

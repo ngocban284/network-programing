@@ -35,3 +35,25 @@
 #define FN_LIST_FOLDER 18
 #define FN_LIST_FILE 19
 #define FN_LIST_ALL_USER 20
+
+#define SIGN_IN "0"
+#define SIGN_UP "1"
+#define PROFILE "2"
+#define MY_SPACE "3"
+#define ACCESS_SPACE "4"
+#define CREATE_SPACE "5"
+#define LIST_MEMBER "7"
+#define SHARE_SPACE "6"
+#define ADD_MEMBER "8"
+#define DELETE_MEMBER "9"
+#define DELETE_SPACE "10"
+#define CREATE_DIR "11"
+#define REMOVE_DIR "12"
+#define UPLOAD_FILE "13"
+#define DOWNLOAD_FILE "14"
+#define REMOVE_FILE "15"
+#define OUT_SPACE "16"
+#define ACCESS_SHARE_SPACE "17"
+#define LIST_FOLDER "18"
+#define LIST_FILE "19"
+#define LIST_ALL_USER "20"

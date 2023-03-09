@@ -23,6 +23,6 @@
 
 char *show_all_user(char *temp);
 char *show_profile(char *userID, char *temp);
-char *list_member(char* userID, char *groupID, char *temp);
-char *list_folder(char *userID, char *groupID, char *temp);
-char *list_file(char *userID, char *groupID, char *temp);
+char *list_member(char* userID, char *spaceID, char *temp);
+char *list_folder(char *userID, char *spaceID, char *temp);
+char *list_file(char *userID, char *spaceID, char *temp);

@@ -150,11 +150,11 @@ void write_file(int sock)
 
             char *ID = strtok(token, "*");
             char *foldername = strtok(NULL, "/");
-            char *GID = get_groupid_via_foldername(con, foldername);
+            char *GID = get_spaceid_via_foldername(con, foldername);
             char *FolderID = get_folderid_via_foldername(con, foldername);
             char *UserID = strtok(temp, "*");
             char *filepath = strtok(NULL, "*");
-            printf("UserID : %s \nGroupID : %s\nfoldername: %s \nFolerID : %s\nfilepath: %s \n", ID, GID, foldername, FolderID, filepath);
+            printf("UserID : %s \nSpaceID : %s\nfoldername: %s \nFolerID : %s\nfilepath: %s \n", ID, GID, foldername, FolderID, filepath);
             char buff[BUFF_SIZE] = "";
 
             strncpy(buff, filepath, strlen(filepath));

@@ -30,9 +30,9 @@ void download_file_res(int new_socket)
         char *UserID = strtok(token, "*");
         char *file = strtok(NULL, "*");
         char filename[BUFF_SIZE] ={0};
-        char *GID = get_groupid_via_foldername(con, foldername);
+        char *GID = get_spaceid_via_foldername(con, foldername);
         strcpy(filename, file);
-        printf("UserID : %s\nFile belong to Group : %s\nfoldername :%s \nFilename : %s\n", ID, GID, foldername, filename);
+        printf("UserID : %s\nFile belong to Space : %s\nfoldername :%s \nFilename : %s\n", ID, GID, foldername, filename);
 
         printf(COLOR_BLUE "[+] Sending ....." COLOR_RESET);
         printf("%s", filename);
@@ -142,10 +142,10 @@ void remove_res(int sockfd)
         printf("filepath : %s\n", filepath);
         char *filename = basename(filepath);
         printf("filename : %s\n", filename);
-        char *GID = get_groupid_via_foldername(con, foldername);
-        printf("GroupID : %s\n", GID);
+        char *GID = get_spaceid_via_foldername(con, foldername);
+        printf("SpaceID : %s\n", GID);
 
-        if (isGroupAdmin(con, UserID, GID) == 0 && check_file_owner(con, UserID, filepath) == 0)
+        if (isSpaceAdmin(con, UserID, GID) == 0 && check_file_owner(con, UserID, filepath) == 0)
         {
             printf("[+] The file is not deleted\n");
             strcpy(status, "[+] The file is not deleted maybe you don't have rights to remove \n");

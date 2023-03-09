@@ -16,7 +16,7 @@
 #include "user.h"
 #include "folder.h"
 #include "show.h"
-#include "group.h"
+#include "space.h"
 
 void *connection_handler(void *client_socket)
 {
