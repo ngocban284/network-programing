@@ -232,6 +232,7 @@ char *listMember(char *userID, char *spaceID, char *temp)
             printf("temp : %s\n", temp);
             while ((row = mysql_fetch_row(result)) != NULL)
             {
+                
                 int i = 0;
                 printf("[%d] : %s\n", i, row[i]);
                 if (strcmp(row[i], userID) == 0)

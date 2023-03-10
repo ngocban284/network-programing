@@ -108,29 +108,30 @@ int main(int argc, const char *argv[])
                         {
                         case 1:
                         {
-                            char mes_send_prof[1024] = {0};
-                            char mes_recv_prof[1024] = {0};
-                            strcpy(mes_send_prof, PROFILE);
-                            strcat(mes_send_prof, "*");
-                            strcat(mes_send_prof, constUserID);
-                            send(network_socket, mes_send_prof, sizeof(mes_send_prof), 0);
-                            memset(mes_send_prof, '\0', (strlen(mes_send_prof) + 1));
-                            read_len = recv(network_socket, mes_recv_prof, sizeof(mes_recv_prof), 0);
-                            // printf("read_len : %d\n", read_len);
-                            mes_recv_prof[read_len] = '\0';
-                            userID = strtok(mes_recv_prof, "*");
+                            
 
-                            char *userName = strtok(NULL, "*");
-                            char *email = strtok(NULL, "*");
+                            char message[SIZE] = {0};
+                            sprintf(message, "%s*%s", PROFILE, constUserID);
+                            send(network_socket, message, strlen(message), 0);
 
-                            printf(COLOR_BLUE "___________________________MY PROFILRE_________________________\n" COLOR_RESET);
+                            memset(message, 0, SIZE);
+                            int bytes_received = recv(network_socket, message, SIZE - 1, 0);
+                            message[bytes_received] = '\0';
+
+                            char* userID = strtok(message, "*");
+                            char* userName = strtok(NULL, "*");
+                            char* email = strtok(NULL, "*");
+
+                            printf(COLOR_BLUE "___________________________MY PROFILE_________________________\n" COLOR_RESET);
                             printf("\t\tUserID   : \t%s\n", userID);
                             printf("\t\tUserName : \t%s\n", userName);
                             printf("\t\tEmail    : \t%s\n\n", email);
                             printf(COLOR_BLUE "_________________________________________________________________\n" COLOR_RESET);
 
+
                             break;
                         }
+                        
                         case 2:
                         {
                             char mes_send_showall[1024] = {0};
@@ -140,10 +141,10 @@ int main(int argc, const char *argv[])
                             strcat(mes_send_showall, constUserID);
 
                             send(network_socket, mes_send_showall, sizeof(mes_send_showall), 0);
-                            memset(mes_send_showall, '\0', (strlen(mes_send_showall) + 1));
+                            memset(mes_send_showall, '\0', sizeof(mes_send_showall));
                             read_len = recv(network_socket, mes_recv_showall, sizeof(mes_recv_showall), 0);
                             mes_recv_showall[read_len] = '\0';
-                            // printf("%s",mes_recv_showall);
+                            
                             if (strcmp(mes_recv_showall, "0") == 0)
                             {
                                 printf(COLOR_RED "Have no one\n" COLOR_RESET);
@@ -162,27 +163,29 @@ int main(int argc, const char *argv[])
                                 {
                                     j++;
                                     p = strtok(NULL, "*");
-                                    // printf("%s",p);
                                     if (p == NULL)
                                     {
                                         break;
                                     }
                                     strcpy(&(userlist[j][255]), p);
                                 }
+                                
                                 printf(COLOR_BLUE "____________________________LIST USER______________________________\n");
                                 printf("%-11s| %-26s | %-21s | %-3s \n", "STT", "UserID", "UserName", "Email");
                                 printf("__________________________________________________________________________\n\n" COLOR_RESET);
+                                
                                 int k = 0;
                                 for (int i = 0; i < (atoi(length1) * 3); i += 3)
                                 {
                                     printf("%-11d| %-26s | %-21s | %-3s \n", k + 1, &userlist[i][255], &userlist[i + 1][255], &userlist[i + 2][255]);
                                     k++;
                                 }
+                                
                                 printf(COLOR_BLUE "__________________________________________________________________________\n\n" COLOR_RESET);
-                                break;
                             }
                             break;
                         }
+
                         case 3:
                         {
 
@@ -284,7 +287,7 @@ int main(int argc, const char *argv[])
                                                 strcat(mes_send_list_member, "*");
                                                 strcat(mes_send_list_member, constUserID);
                                                 send(network_socket, mes_send_list_member, sizeof(mes_send_list_member), 0);
-                                                memset(mes_send_space_id, '\0', (strlen(mes_send_space_id) + 1));
+                                                memset(mes_recv_space_id, '\0', (strlen(mes_recv_space_id) + 1));
                                                 read_len = recv(network_socket, mes_recv_list_member, sizeof(mes_recv_list_member), 0);
                                                 mes_recv_list_member[read_len] = '\0';
                                                 if (strcmp(mes_recv_list_member, "0") == 0)
@@ -336,146 +339,88 @@ int main(int argc, const char *argv[])
 
                                             case 2:
                                             {
-
                                                 char mes_send_list_folder[BUFF_SIZE] = {0};
                                                 char mes_recv_list_folder[BUFF_SIZE] = {0};
-                                                strcpy(mes_send_list_folder, LIST_FOLDER);
-                                                strcat(mes_send_list_folder, "*");
-                                                strcat(mes_send_list_folder, spaceID);
-                                                strcat(mes_send_list_folder, "*");
-                                                strcat(mes_send_list_folder, constUserID);
-                                                send(network_socket, mes_send_list_folder, sizeof(mes_send_list_folder), 0);
-                                                memset(mes_send_list_folder, '\0', (strlen(mes_send_list_folder) + 1));
-                                                read_len = recv(network_socket, mes_recv_list_folder, sizeof(mes_recv_list_folder), 0);
+                                                sprintf(mes_send_list_folder, "%s*%s*%s", LIST_FOLDER, spaceID, constUserID);
+                                                send(network_socket, mes_send_list_folder, strlen(mes_send_list_folder), 0);
+                                                memset(mes_send_list_folder, 0, BUFF_SIZE);
+                                                ssize_t read_len = recv(network_socket, mes_recv_list_folder, BUFF_SIZE, 0);
                                                 mes_recv_list_folder[read_len] = '\0';
-                                                // printf("check string : %s\n", mes_recv_list_folder);
                                                 if (strcmp(mes_recv_list_folder, "0") == 0)
                                                 {
-                                                    printf(COLOR_RED "There are no folder in this space\n" COLOR_RESET);
+                                                    printf(COLOR_RED "There are no folders in this space\n" COLOR_RESET);
                                                     break;
                                                 }
                                                 else
                                                 {
-                                                    // do nothing
-                                                    strtok(mes_recv_list_folder, "*");
-                                                    char *length1 = strtok(NULL, "*");
-                                                    int length = atoi(length1);
-                                                    char listFoler[length][255];
-                                                    char *p;
-                                                    int j = 0;
-                                                    p = strtok(NULL, "*");
-                                                    strcpy(&listFoler[j][255], p);
-                                                    // printf("list[0] : %s\n", &listFoler[j][255]);
-                                                    while (p != NULL)
+                                                    char *token = strtok(mes_recv_list_folder, "*");
+                                                    int length = atoi(strtok(NULL, "*"));
+                                                    char listFolders[length][255];
+                                                    for (int i = 0; i < length; i++)
                                                     {
-                                                        j++;
-                                                        p = strtok(NULL, "*");
-                                                        //  printf(" p : %s\n", p);
-                                                        if (p == NULL)
-                                                        {
-                                                            break;
-                                                        }
-                                                        else
-                                                        {
-                                                            strcpy(&(listFoler[j][255]), p);
-                                                        }
+                                                        strcpy(listFolders[i], strtok(NULL, "*"));
+                                                        strtok(NULL, "*"); // Discard the owner information
                                                     }
-                                                    printf(COLOR_BLUE "_______________________________________LIST FOLDER__________________________________\n");
-                                                    // printf("\nSTT\t| Folder Name\t\t |  Owner\n");
-                                                    printf("%-11s| %-28s|  %-10s \n", "STT", "FolderName", "Owner");
+                                                    printf(COLOR_BLUE "_______________________________________LIST FOLDERS__________________________________\n");
+                                                    printf("%-11s| %-28s|  %-10s \n", "STT", "Folder Name", "Owner");
                                                     printf("___________________________________________________________________________________________\n\n" COLOR_RESET);
-
-                                                    int k = 0;
-                                                    for (int i = 0; i < (length * 2); i += 2)
+                                                    for (int i = 0; i < length; i++)
                                                     {
-
-                                                        printf("%-11d| %-28s|  %-10s \n", k + 1, &listFoler[i][255], &listFoler[i + 1][255]);
-                                                        k++;
+                                                        printf("%-11d| %-28s|  %-10s \n", i + 1, listFolders[i], constUserID);
                                                     }
                                                     printf(COLOR_BLUE "___________________________________________________________________________________________\n\n" COLOR_RESET);
                                                     break;
                                                 }
-                                                break;
                                             }
+
                                             case 3:
                                             {
 
-                                                char mes_send_list_file[BUFF_SIZE] = {0};
-                                                char mes_recv_list_file[BUFF_SIZE] = {0};
-                                                strcpy(mes_send_list_file, LIST_FILE);
-                                                strcat(mes_send_list_file, "*");
-                                                strcat(mes_send_list_file, spaceID);
-                                                strcat(mes_send_list_file, "*");
-                                                strcat(mes_send_list_file, constUserID);
-                                                send(network_socket, mes_send_list_file, sizeof(mes_send_list_file), 0);
-                                                memset(mes_send_list_file, '\0', (strlen(mes_send_list_file) + 1));
+                                                char mes_send_list_file[SIZE];
+                                                char mes_recv_list_file[SIZE];
+                                                int read_len;
+
+                                                // Construct message to send
+                                                sprintf(mes_send_list_file, "%s*%s*%s", LIST_FILE, spaceID, constUserID);
+
+                                                // Send message to server
+                                                send(network_socket, mes_send_list_file, strlen(mes_send_list_file), 0);
+
+                                                // Receive response from server
                                                 read_len = recv(network_socket, mes_recv_list_file, sizeof(mes_recv_list_file), 0);
                                                 mes_recv_list_file[read_len] = '\0';
-                                                // printf("check string : %s\n", mes_recv_list_file);
-                                                if (strcmp(mes_recv_list_file, "0") == 0)
-                                                {
+
+                                                // Check if there are files in folder
+                                                if (strcmp(mes_recv_list_file, "0") == 0) {
                                                     printf(COLOR_RED "There are no files in this folder\n" COLOR_RESET);
-                                                    break;
-                                                }
-                                                else
-                                                {
-                                                    // do nothing
+                                                } else {
+                                                    // Parse response to get list of files
                                                     strtok(mes_recv_list_file, "*");
-                                                    char *length1 = strtok(NULL, "*");
-                                                    int length = atoi(length1);
-                                                    // printf("check length : %d\n", length);
-                                                    if (atoi(length1) > 0)
-                                                    {
-                                                        char listFile[length * 2][255];
-                                                        char *p;
-                                                        int j = 0;
-                                                        p = strtok(NULL, "*");
-                                                        strcpy(&listFile[j][255], p);
-                                                        // printf("list[0] : %s\n", &listFile[j][255]);
-                                                        while (p != NULL)
-                                                        {
-                                                            j++;
-                                                            p = strtok(NULL, "*");
-                                                            // printf(" p[%d] : %s\n", j, p);
-                                                            if (p == NULL)
-                                                            {
-                                                                break;
-                                                            }
-                                                            else
-                                                            {
-                                                                strcpy(&(listFile[j][255]), p);
-                                                                // printf("list[%d] : %s\n", j, &listFile[j][255]);
-                                                            }
-
-                                                            // printf(" listFile[%d] : %s\n",j, &listFile[j][255]);
-                                                        }
-                                                        for (int i = 0; i < 6; i++)
-                                                        {
-                                                            // printf(" listFile[%d] : %s\n", i, &listFile[i][255]);
+                                                    char *length_str = strtok(NULL, "*");
+                                                    int length = atoi(length_str);
+                                                    if (length > 0) {
+                                                        char listFile[length][255];
+                                                        for (int i = 0; i < length; i++) {
+                                                            char *file_name = strtok(NULL, "*");
+                                                            char *owner = strtok(NULL, "*");
+                                                            sprintf(listFile[i], "%s|%s", file_name, owner);
                                                         }
 
+                                                        // Print list of files
                                                         printf(COLOR_BLUE "________________________________________LIST FILE__________________________________________\n");
-                                                        // printf("\nSTT\t| File Name\t\t\t |  Owner\n");
                                                         printf("%-11s| %-28s|  %-10s \n", "STT", "FileName", "Owner");
                                                         printf("___________________________________________________________________________________________\n" COLOR_RESET);
-
-                                                        int k = 0;
-                                                        for (int i = 0; i < (atoi(length1) * 2); i += 2)
-                                                        {
-
-                                                            printf("%-11d| %-28s|  %-10s \n", k + 1, &listFile[i][255], &listFile[i + 1][255]);
-                                                            k++;
+                                                        for (int i = 0; i < length; i++) {
+                                                            printf("%-11d| %-28s|  %-10s \n", i+1, strtok(listFile[i], "|"), strtok(NULL, "|"));
                                                         }
                                                         printf(COLOR_BLUE "___________________________________________________________________________________________\n" COLOR_RESET);
-                                                    }
-                                                    else
-                                                    {
+                                                    } else {
                                                         printf(COLOR_RED "There are no files in this folder\n" COLOR_RESET);
-                                                        break;
                                                     }
                                                 }
                                                 break;
                                             }
+
                                             case 4: // UPLOAD
                                             {
 
@@ -525,41 +470,33 @@ int main(int argc, const char *argv[])
                                                 bzero(mes_request, strlen(mes_request));
                                                 break;
                                             }
-                                            case 9:
+                                            case 9: 
                                             {
-
-                                                // printf("check spaceID : %s\n", spaceID);
                                                 char mes_send_add_member[255] = {0};
                                                 char mes_recv_add_member[255] = {0};
                                                 char email[255];
-                                                printf("Enter email of member to add : ");
-                                                scanf("%[^\n]", email);
-                                                getchar();
-                                                strcpy(mes_send_add_member, ADD_MEMBER);
-                                                strcat(mes_send_add_member, "*");
-                                                strcat(mes_send_add_member, email);
-                                                strcat(mes_send_add_member, "*");
-                                                strcat(mes_send_add_member, spaceID);
-                                                send(network_socket, mes_send_add_member, sizeof(mes_send_add_member), 0);
-                                                memset(mes_send_add_member, '\0', (strlen(mes_send_add_member) + 1));
-                                                read_len = recv(network_socket, mes_recv_add_member, sizeof(mes_recv_add_member), 0);
+                                                printf("Enter email of member to add: ");
+                                                scanf("%254[^\n]%*c", email); // using a field width specifier and *c to consume the newline character
+                                                snprintf(mes_send_add_member, sizeof(mes_send_add_member), "%s*%s*%s", ADD_MEMBER, email, spaceID);
+                                                send(network_socket, mes_send_add_member, strlen(mes_send_add_member), 0);
+                                                memset(mes_send_add_member, '\0', sizeof(mes_send_add_member));
+                                                ssize_t read_len = recv(network_socket, mes_recv_add_member, sizeof(mes_recv_add_member), 0);
+                                                if (read_len == -1) {
+                                                    perror("recv failed");
+                                                    exit(EXIT_FAILURE);
+                                                }
                                                 mes_recv_add_member[read_len] = '\0';
                                                 int check = atoi(mes_recv_add_member);
-                                                //  printf("check result : %d\n", check);
-                                                if (check == 0)
-                                                {
-                                                    printf(COLOR_RED " Add member %s failed, Try again.\n" COLOR_RESET, email);
-                                                }
-                                                else if (check == 2)
-                                                {
-                                                    printf(COLOR_RED " Add member %s failed, have already exist !!.\n" COLOR_RESET, email);
-                                                }
-                                                else
-                                                {
-                                                    printf(COLOR_GREEN " Add member %s successfull !!.\n" COLOR_RESET, email);
+                                                if (check == 0) {
+                                                    printf(COLOR_RED "Add member %s failed. Please try again.\n" COLOR_RESET, email);
+                                                } else if (check == 2) {
+                                                    printf(COLOR_RED "Add member %s failed. The member already exists.\n" COLOR_RESET, email);
+                                                } else {
+                                                    printf(COLOR_GREEN "Add member %s successful.\n" COLOR_RESET, email);
                                                 }
                                                 break;
                                             }
+
                                             case 10:
                                             {
 
@@ -594,9 +531,7 @@ int main(int argc, const char *argv[])
                                                 }
                                                 break;
                                             }
-                                            case 11:
-                                            {
-
+                                            case 11: {
                                                 char mes_send_del_space[255] = {0};
                                                 char mes_recv_del_space[255] = {0};
                                                 char sureDel[255];
@@ -604,14 +539,13 @@ int main(int argc, const char *argv[])
                                                 printf("Enter y( or Y)/ NO (any key) : ");
                                                 scanf("%[^\n]", sureDel);
                                                 getchar();
-                                                if (strcmp(sureDel, "y") == 0 || strcmp(sureDel, "Y") == 0)
+                                                if (strcasecmp(sureDel, "y") == 0)
                                                 {
-
                                                     strcpy(mes_send_del_space, DELETE_SPACE);
                                                     strcat(mes_send_del_space, "*");
                                                     strcat(mes_send_del_space, spaceID);
-                                                    send(network_socket, mes_send_del_space, sizeof(mes_send_del_space), 0);
-                                                    memset(mes_send_del_space, '\0', (strlen(mes_send_del_space) + 1));
+                                                    send(network_socket, mes_send_del_space, strlen(mes_send_del_space), 0);
+                                                    memset(mes_send_del_space, '\0', sizeof(mes_send_del_space));
                                                     read_len = recv(network_socket, mes_recv_del_space, sizeof(mes_recv_del_space), 0);
                                                     mes_recv_del_space[read_len] = '\0';
                                                     int check = atoi(mes_recv_del_space);
@@ -633,6 +567,7 @@ int main(int argc, const char *argv[])
                                                 }
                                                 break;
                                             }
+
                                             default:
                                             {
                                                 break;

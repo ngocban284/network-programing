@@ -303,14 +303,17 @@ void *connection_handler(void *client_socket)
                     printf("spaceID : %s\n", spaceID);
                     printf("userID : %s\n", userID);
                     char *status = listMember(userID, spaceID, temp);
+                   
                     printf("status : %s\n", status);
                     if (strcmp(temp, "0") == 0)
                     {
-                        send(socket, temp, strlen(temp), 0);
+                       
+                       
+                        send(socket, status, strlen(status), 0);
                     }
                     else
                     {
-                        send(socket, status, strlen(status), 0);
+                        send(socket, temp, strlen(temp), 0);
                     }
                     break;
                 }
