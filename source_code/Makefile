@@ -4,10 +4,10 @@ LIBS =  -lm
 
 all: server client
 
-server: file.o fileRes.o  user.o folder.o space.o show.o menu.o server.o 
-	${CC} server.o file.o fileRes.o  user.o folder.o space.o show.o menu.o -o server -lmysqlclient -lpthread
-client: file.o fileRes.o user.o folder.o space.o show.o menu.o client.o
-	${CC} client.o file.o fileRes.o folder.o user.o space.o show.o menu.o -o client -lmysqlclient -lpthread
+server: file.o fileRes.o  user.o folder.o space.o showData.o menu.o server.o 
+	${CC} server.o file.o fileRes.o  user.o folder.o space.o showData.o menu.o -o server -lmysqlclient -lpthread
+client: file.o fileRes.o user.o folder.o space.o showData.o menu.o client.o
+	${CC} client.o file.o fileRes.o folder.o user.o space.o showData.o menu.o -o client -lmysqlclient -lpthread
 server.o: server.c
 	${CC} ${CFLAGS} -lmysqlclient -lpthread server.c 
 client.o: client.c
@@ -22,11 +22,11 @@ folder.o: folder.c
 	${CC} ${CFLAGS} folder.c
 space.o: space.c
 	${CC} ${CFLAGS} space.c
-show.o: show.c
-	${CC} ${CFLAGS} show.c
+showData.o: showData.c
+	${CC} ${CFLAGS} showData.c
 menu.o: menu.c
 	${CC} ${CFLAGS} menu.c
 clean:
-	rm -f *.o *~
+	rm -f *.o *~ client server
 
 

@@ -15,7 +15,7 @@
 #include "fileRes.h"
 #include "user.h"
 #include "folder.h"
-#include "show.h"
+#include "showData.h"
 #include "space.h"
 
 void *connection_handler(void *client_socket)
@@ -55,7 +55,7 @@ void *connection_handler(void *client_socket)
                     printf("code : %s\n", code);
                     printf("spaceID : %s\n", spaceID);
                     printf("userID : %s\n", userID);
-                    char *status = list_folder(userID, spaceID, temp);
+                    char *status = listFolder(userID, spaceID, temp);
                     printf("status : %s\n", status);
                     if (strcmp(temp, "0") == 0)
                     {
@@ -77,7 +77,7 @@ void *connection_handler(void *client_socket)
                     printf("code : %s\n", code);
                     printf("spaceID : %s\n", spaceID);
                     printf("userID : %s\n", userID);
-                    char *status = list_file(userID, spaceID, temp);
+                    char *status = listFile(userID, spaceID, temp);
                     printf("status : %s, %ld\n", status, strlen(status));
                     if (strcmp(status, "0") == 0)
                     {
@@ -160,7 +160,7 @@ void *connection_handler(void *client_socket)
                     char temp[1024] = "";
                     printf("code : %s\n", code);
                     printf("userID : %s\n", userID);
-                    char *status = show_profile(userID, temp);
+                    char *status = showProfile(userID, temp);
                     printf("status : %s\n", status);
                     if (strcmp(temp, "0") == 0)
                     {
@@ -180,7 +180,7 @@ void *connection_handler(void *client_socket)
                     char temp[1024] = "";
                     printf("code : %s\n", code);
                     printf("userID : %s\n", userID);
-                    char *status = show_all_user(temp);
+                    char *status = showAllUser(temp);
                     printf("status : %s\n", status);
                     if (strcmp(temp, "0") == 0)
                     {
@@ -302,7 +302,7 @@ void *connection_handler(void *client_socket)
                     printf("code : %s\n", code);
                     printf("spaceID : %s\n", spaceID);
                     printf("userID : %s\n", userID);
-                    char *status = list_member(userID, spaceID, temp);
+                    char *status = listMember(userID, spaceID, temp);
                     printf("status : %s\n", status);
                     if (strcmp(temp, "0") == 0)
                     {

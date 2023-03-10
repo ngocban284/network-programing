@@ -21,8 +21,8 @@
 #include "user.h"
 #include "define.h"
 
-char *show_all_user(char *temp);
-char *show_profile(char *userID, char *temp);
-char *list_member(char* userID, char *spaceID, char *temp);
-char *list_folder(char *userID, char *spaceID, char *temp);
-char *list_file(char *userID, char *spaceID, char *temp);
+char *showProfile(char *userID, char *temp);
+char *showAllUser(char *temp);
+char *listMember(char* userID, char *spaceID, char *temp);
+char *listFolder(char *userID, char *spaceID, char *temp);
+char *listFile(char *userID, char *spaceID, char *temp);

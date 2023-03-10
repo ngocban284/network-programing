@@ -12,7 +12,7 @@
 #include "fileRes.h"
 #include "user.h"
 #include "folder.h"
-#include "show.h"
+#include "showData.h"
 #include "space.h"
 
 int main(int argc, const char *argv[])
@@ -48,7 +48,7 @@ int main(int argc, const char *argv[])
         {
             char email[255] = {0};
             char password[255] = {0};
-            login_page();
+            loginPage();
             printf(COLOR_GREEN "Enter your choice : " COLOR_RESET);
             scanf("%d", &choice);
             getchar();
@@ -66,7 +66,7 @@ int main(int argc, const char *argv[])
                 char *userID;
                 printf(COLOR_GREEN "\nEnter Email\t\t: " COLOR_RESET);
                 scanf("%s", email);
-                int validate_login(char *email, char *password);
+                int validateLogin(char *email, char *password);
                 printf(COLOR_GREEN "\nEnter Password\t\t: " COLOR_RESET);
                 scanf("%s", password);
                 char message[BUFF_SIZE] = "";
@@ -100,7 +100,7 @@ int main(int argc, const char *argv[])
                     do
                     {
 
-                        home_page();
+                        homePage();
                         printf(COLOR_GREEN "\nYour choice: " COLOR_RESET);
                         scanf("%d", &choose);
                         getchar();
@@ -266,7 +266,7 @@ int main(int argc, const char *argv[])
                                         do
                                         {
 
-                                            admin_page();
+                                            adminPage();
 
                                             printf(COLOR_GREEN "Your choose : " COLOR_RESET);
                                             scanf("%d", &choose1);
@@ -729,7 +729,7 @@ int main(int argc, const char *argv[])
                                         do
                                         {
 
-                                            share_space_page();
+                                            shareSpacePage();
 
                                             printf(COLOR_GREEN "Your choose : " COLOR_RESET);
                                             scanf("%d", &choose2);
@@ -1110,7 +1110,7 @@ int main(int argc, const char *argv[])
                 getchar();
                 int state_validate;
                 int state = 0;
-                state_validate = validate_login(email, password);
+                state_validate = validateLogin(email, password);
                 if (state_validate == 1)
                 {
                     char message[BUFF_SIZE] = "";

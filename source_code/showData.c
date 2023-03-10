@@ -1,5 +1,116 @@
-#include "show.h"
-char *show_all_user(char *temp)
+#include "showData.h"
+
+char *checkPermission(char *userID, char *spaceID)
+{
+    printf("userID: %s\n", userID);
+    printf("spaceID: %s\n", spaceID);
+    char *query = (char *)malloc(255 * sizeof(char));
+    MYSQL *sql = mysql_init(NULL);
+    if (sql == NULL)
+    {
+        fprintf(stderr, "mysql_init() failed\n");
+        return "0";
+    }
+
+    if (mysql_real_connect(sql, db_host, db_user, db_pass, db_name, 0, NULL, 0) == NULL)
+    {
+        fprintf(stderr, "%s\n", mysql_error(sql));
+        mysql_close(sql);
+        return "0";
+    }
+    sprintf(query, "SELECT UserID FROM share_space where SpaceID = \"%s\" ", spaceID);
+
+    if (mysql_query(sql, query) == 1)
+    {
+        fprintf(stderr, "%s\n", mysql_error(sql));
+        mysql_close(sql);
+        return "0";
+    }
+
+    MYSQL_RES *result;
+    result = mysql_store_result(sql);
+    if (result == NULL)
+    {
+        fprintf(stderr, "%s\n", mysql_error(sql));
+        mysql_close(sql);
+        return "0";
+    }
+    MYSQL_ROW row;
+    while ((row = mysql_fetch_row(result)) != NULL)
+    {
+        int i = 0;
+        if (strcmp(row[i], userID) == 0)
+        {
+            return "1";
+        }
+    }
+    return "0";
+}
+
+char *showProfile(char *userID, char *temp)
+{
+    strcpy(temp, "0");
+    MYSQL *sql = mysql_init(NULL);
+
+    if (sql == NULL)
+    {
+        fprintf(stderr, "mysql_init() failed\n");
+        return temp;
+    }
+
+    if (mysql_real_connect(sql, db_host, db_user, db_pass, db_name, 0, NULL, 0) == NULL)
+    {
+        fprintf(stderr, "%s\n", mysql_error(sql));
+        mysql_close(sql);
+        return temp;
+    }
+
+    char *query = (char *)malloc(255 * sizeof(char));
+
+    sprintf(query, "SELECT UserID, UserName, Email FROM network_user where UserID = \"%s\" ", userID);
+    if (mysql_query(sql, query) == 1)
+    {
+        fprintf(stderr, "%s\n", mysql_error(sql));
+        mysql_close(sql);
+        return temp;
+    }
+    else
+    {
+        MYSQL_RES *result;
+        result = mysql_store_result(sql);
+        printf("check row count : %ld\n", result->row_count);
+        if (result->row_count == 0)
+        {
+            fprintf(stderr, "%s\n", mysql_error(sql));
+            mysql_close(sql);
+            return temp;
+        }
+        else
+        {
+            MYSQL_ROW row;
+            int i = 0;
+            while ((row = mysql_fetch_row(result)) != NULL)
+            {
+                printf("-------- tra ve profile----------\n");
+                printf("UserID : %s\n", row[i]);
+                printf("UserName : %s\n", row[i + 1]);
+                printf("Email : %s\n", row[i + 2]);
+                strcpy(temp, row[i]);
+                strcat(temp, "*");
+                strcat(temp, row[i + 1]);
+                strcat(temp, "*");
+                strcat(temp, row[i + 2]);
+                printf("temp : %s\n", temp);
+            }
+        }
+        mysql_free_result(result);
+    }
+
+    mysql_close(sql);
+    return temp;
+}
+
+char *showAllUser(char *temp)
 {
     MYSQL *sql = mysql_init(NULL);
     strcpy(temp, "0");
@@ -63,115 +174,8 @@ char *show_all_user(char *temp)
     mysql_close(sql);
     return temp;
 }
-char *show_profile(char *userID, char *temp)
-{
-    MYSQL *sql = mysql_init(NULL);
-    strcpy(temp, "0");
-    if (sql == NULL)
-    {
-        fprintf(stderr, "mysql_init() failed\n");
-        return temp;
-    }
 
-    if (mysql_real_connect(sql, db_host, db_user, db_pass, db_name, 0, NULL, 0) == NULL)
-    {
-        fprintf(stderr, "%s\n", mysql_error(sql));
-        mysql_close(sql);
-        return temp;
-    }
-    char *query = (char *)malloc(255 * sizeof(char));
-
-    sprintf(query, "SELECT UserID, UserName, Email FROM network_user where UserID = \"%s\" ", userID);
-    if (mysql_query(sql, query) == 1)
-    {
-        fprintf(stderr, "%s\n", mysql_error(sql));
-        mysql_close(sql);
-        return temp;
-    }
-    else
-    {
-        MYSQL_RES *result;
-        result = mysql_store_result(sql);
-        printf("check row count : %ld\n", result->row_count);
-        if (result->row_count == 0)
-        {
-            fprintf(stderr, "%s\n", mysql_error(sql));
-            mysql_close(sql);
-            return temp;
-        }
-        else
-        {
-            MYSQL_ROW row;
-            int i = 0;
-            while ((row = mysql_fetch_row(result)) != NULL)
-            {
-                printf("-------- tra ve profile----------\n");
-                printf("UserID : %s\n", row[i]);
-                printf("UserName : %s\n", row[i + 1]);
-                printf("Email : %s\n", row[i + 2]);
-                strcpy(temp, row[i]);
-                strcat(temp, "*");
-                strcat(temp, row[i + 1]);
-                strcat(temp, "*");
-                strcat(temp, row[i + 2]);
-                printf("temp : %s\n", temp);
-            }
-        }
-        mysql_free_result(result);
-    }
-
-    mysql_close(sql);
-    return temp;
-}
-
-char *checkPermission(char *userID, char *spaceID)
-{
-    printf("userID: %s\n", userID);
-    printf("spaceID: %s\n", spaceID);
-    char *query = (char *)malloc(255 * sizeof(char));
-    MYSQL *sql = mysql_init(NULL);
-    if (sql == NULL)
-    {
-        fprintf(stderr, "mysql_init() failed\n");
-        return "0";
-    }
-
-    if (mysql_real_connect(sql, db_host, db_user, db_pass, db_name, 0, NULL, 0) == NULL)
-    {
-        fprintf(stderr, "%s\n", mysql_error(sql));
-        mysql_close(sql);
-        return "0";
-    }
-    sprintf(query, "SELECT UserID FROM share_space where SpaceID = \"%s\" ", spaceID);
-
-    if (mysql_query(sql, query) == 1)
-    {
-        fprintf(stderr, "%s\n", mysql_error(sql));
-        mysql_close(sql);
-        return "0";
-    }
-
-    MYSQL_RES *result;
-    result = mysql_store_result(sql);
-    if (result == NULL)
-    {
-        fprintf(stderr, "%s\n", mysql_error(sql));
-        mysql_close(sql);
-        return "0";
-    }
-    MYSQL_ROW row;
-    while ((row = mysql_fetch_row(result)) != NULL)
-    {   
-        int i = 0;
-        if (strcmp(row[i], userID) == 0)
-        {
-            return "1";
-        }
-    }
-    return "0";
-}
-
-char *list_member(char *userID, char *spaceID, char *temp)
+char *listMember(char *userID, char *spaceID, char *temp)
 {
     char *permission = (char *)malloc(10 * sizeof(char));
     strcpy(permission, "0");
@@ -215,7 +219,6 @@ char *list_member(char *userID, char *spaceID, char *temp)
         {
             MYSQL_ROW row;
             MYSQL_ROW row1;
-            MYSQL_ROW row11;
 
             printf("-------- Tra ve list member----------\n");
             strcpy(temp, spaceID);
@@ -265,10 +268,12 @@ char *list_member(char *userID, char *spaceID, char *temp)
     }
     return temp;
 }
-char *list_folder(char *userID, char *spaceID, char *temp)
+
+char *listFolder(char *userID, char *spaceID, char *temp)
 {
-    MYSQL *sql = mysql_init(NULL);
     strcpy(temp, "0");
+    MYSQL *sql = mysql_init(NULL);
+
     if (sql == NULL)
     {
         fprintf(stderr, "mysql_init() failed\n");
@@ -281,8 +286,10 @@ char *list_folder(char *userID, char *spaceID, char *temp)
         mysql_close(sql);
         return temp;
     }
+
     char *query = (char *)malloc(255 * sizeof(char));
     sprintf(query, "SELECT f.FolderName, u.UserName FROM share_folder as f, network_user as u where f.UserID = u.UserID AND SpaceID = \"%s\" ", spaceID);
+    
     if (mysql_query(sql, query) == 1)
     {
         fprintf(stderr, "%s\n", mysql_error(sql));
@@ -327,22 +334,28 @@ char *list_folder(char *userID, char *spaceID, char *temp)
     }
 
     mysql_close(sql);
+
     char *permission = checkPermission(userID, spaceID);
-    if(strcmp(permission, "0") == 0) {
+    if (strcmp(permission, "0") == 0)
+    {
         return permission;
     }
-    return temp;    
+    return temp;
 }
 
-char *list_file(char *userID, char *spaceID, char *temp)
-{   
+char *listFile(char *userID, char *spaceID, char *temp)
+{
     strcpy(temp, "0");
     char *permission = checkPermission(userID, spaceID);
-        printf("permission: %s\n", permission);
-    if(strcmp(permission, "0") == 0) {
+    printf("permission: %s\n", permission);
+
+    if (strcmp(permission, "0") == 0)
+    {
         return permission;
     }
+
     MYSQL *sql = mysql_init(NULL);
+
     if (sql == NULL)
     {
         fprintf(stderr, "mysql_init() failed\n");
@@ -355,6 +368,7 @@ char *list_file(char *userID, char *spaceID, char *temp)
         mysql_close(sql);
         return temp;
     }
+    
     char *query = (char *)malloc(255 * sizeof(char));
     char *query1 = (char *)malloc(255 * sizeof(char));
 
