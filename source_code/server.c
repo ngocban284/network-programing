@@ -22,7 +22,7 @@ void *connection_handler(void *client_socket)
 {
     int socket = *(int *)client_socket;
 
-    char server_message[100] = "_____________________________WELCOME TO MY PROJECT_____________________________\n";
+    char server_message[100] = "________________________________________WELCOME________________________________________\n";
     send(socket, server_message, sizeof(server_message), 0);
 
     while (1)

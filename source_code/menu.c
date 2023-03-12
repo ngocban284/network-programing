@@ -19,12 +19,12 @@ int validateLogin(char *email, char *password)
 
 void loginPage()
 {
-    printf(COLOR_BLUE "\n_____________________YOU MUST BE LOGGED TO USE THE PROGRAM____________________\n" COLOR_RESET);
+    printf(COLOR_BLUE "\n_______You need to sign in to use, if you don't have an account, please sign up_______\n" COLOR_RESET);
     printf("\n");
     printf("\t\t\t\t1. Sign in.\n");
     printf("\t\t\t\t2. Sign up.\n");
     printf("\t\t\t\t3. Exit.\n");
-    printf(COLOR_BLUE "________________________________________________________________________________________\n" COLOR_RESET);
+    printf(COLOR_BLUE "_______________________________________________________________________________________\n" COLOR_RESET);
 }
 
 void homePage()

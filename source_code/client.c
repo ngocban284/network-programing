@@ -49,7 +49,7 @@ int main(int argc, const char *argv[])
             char email[255] = {0};
             char password[255] = {0};
             loginPage();
-            printf(COLOR_GREEN "Enter your choice : " COLOR_RESET);
+            printf(COLOR_GREEN "Your choice : " COLOR_RESET);
             scanf("%d", &choice);
             getchar();
             switch (choice)
@@ -64,10 +64,10 @@ int main(int argc, const char *argv[])
                 int read_len;
                 char mes_rev[255] = {0};
                 char *userID;
-                printf(COLOR_GREEN "\nEnter Email\t\t: " COLOR_RESET);
+                printf(COLOR_GREEN "\nEmail    : " COLOR_RESET);
                 scanf("%s", email);
                 int validateLogin(char *email, char *password);
-                printf(COLOR_GREEN "\nEnter Password\t\t: " COLOR_RESET);
+                printf(COLOR_GREEN "\nPassword : " COLOR_RESET);
                 scanf("%s", password);
                 char message[BUFF_SIZE] = "";
                 // char sign_in_code[10] = "0";
