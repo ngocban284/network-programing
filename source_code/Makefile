@@ -1,4 +1,4 @@
-CFLAGS = -c -Wall -I/usr/include/mysql -L/usr/lib64/mysql
+CFLAGS = -c -Wall 
 CC = gcc -g
 LIBS =  -lm 
 
