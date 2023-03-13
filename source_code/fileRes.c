@@ -12,10 +12,10 @@ void download_file_res(int new_socket)
     MYSQL *con;
     con = mysql_init(NULL);
 
-    // char status[BUFF_SIZE] = {0};
-    char token[BUFF_SIZE] = {0};
-    char temp[BUFF_SIZE] = {0};
-    if (read(new_socket, token, BUFF_SIZE) == -1)
+    // char status[SIZE] = {0};
+    char token[SIZE] = {0};
+    char temp[SIZE] = {0};
+    if (read(new_socket, token, SIZE) == -1)
     {
         perror("Couldn't receive command");
     }
@@ -29,7 +29,7 @@ void download_file_res(int new_socket)
 
         char *UserID = strtok(token, "*");
         char *file = strtok(NULL, "*");
-        char filename[BUFF_SIZE] ={0};
+        char filename[SIZE] ={0};
         char *GID = get_spaceid_via_foldername(con, foldername);
         strcpy(filename, file);
         printf("UserID : %s\nFile belong to Space : %s\nfoldername :%s \nFilename : %s\n", ID, GID, foldername, filename);
@@ -42,9 +42,9 @@ void download_file_res(int new_socket)
         if (fd == NULL)
         {
             char conf[9] = "notfound";
-            char buf[BUFF_SIZE] = {0};
+            char buf[SIZE] = {0};
             strncpy(buf, conf, strlen(conf));
-            if (send(new_socket, buf, BUFF_SIZE, 0) == -1)
+            if (send(new_socket, buf, SIZE, 0) == -1)
             {
                 perror("Couldn't send file confirmation message.\n");
             }
@@ -52,22 +52,22 @@ void download_file_res(int new_socket)
         else
         {
             char conf[6] = "found";
-            char buf[BUFF_SIZE] = {0};
+            char buf[SIZE] = {0};
             strncpy(buf, conf, strlen(conf));
             // send confirm
-            if (send(new_socket, buf, BUFF_SIZE, 0) == -1)
+            if (send(new_socket, buf, SIZE, 0) == -1)
             {
                 perror("Couldn't send file confirmation message.\n");
             }
             // check allow
             if (check_user_access(con, UserID, foldername) == 0)
             {
-                send(new_socket, "notallow", BUFF_SIZE, 0);
+                send(new_socket, "notallow", SIZE, 0);
                 // strcpy(status, "download failed");
             }
             else
             {
-                send(new_socket, "allow", BUFF_SIZE, 0);
+                send(new_socket, "allow", SIZE, 0);
                 // getting size of file
                 fseek(fd, 0L, SEEK_END);
                 long int sz = ftell(fd);
@@ -89,12 +89,12 @@ void download_file_res(int new_socket)
                     perror("write");
                 }
 
-                char buffer[BUFF_SIZE] = {0};
+                char buffer[SIZE] = {0};
 
                 // reading from file and sending to client
                 while (1)
                 {
-                    n = read(fp, buffer, BUFF_SIZE);
+                    n = read(fp, buffer, SIZE);
                     if (n == 0)
                         break;
                     if (n == -1)
@@ -113,7 +113,7 @@ void download_file_res(int new_socket)
                 close(fp);
             }
             // send status
-            // if (send(new_socket, status, BUFF_SIZE, 0) > 0)
+            // if (send(new_socket, status, SIZE, 0) > 0)
             // {
             //     printf("status : %s\n",status);
             // }
@@ -126,10 +126,10 @@ void download_file_res(int new_socket)
 void remove_res(int sockfd)
 {
     MYSQL *con = mysql_init(NULL);
-    char buff[BUFF_SIZE] = {0};
-    char temp[BUFF_SIZE] = {0};
-    char status[BUFF_SIZE] = {0};
-    if (recv(sockfd, buff, BUFF_SIZE, 0) > 0)
+    char buff[SIZE] = {0};
+    char temp[SIZE] = {0};
+    char status[SIZE] = {0};
+    if (recv(sockfd, buff, SIZE, 0) > 0)
     {
         strcpy(temp, buff);
         char *ID = strtok(temp, "*");
@@ -183,5 +183,5 @@ void remove_res(int sockfd)
             }
         }
     }
-    send(sockfd, status, BUFF_SIZE, 0);
+    send(sockfd, status, SIZE, 0);
 }
