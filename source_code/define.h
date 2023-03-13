@@ -1,4 +1,4 @@
-#define SERVER_ADDR "13.215.163.110"
+#define SERVER_ADDR "18.142.250.190"
 
 #define SIZE 1024
 #define BUFF_SIZE 4096
