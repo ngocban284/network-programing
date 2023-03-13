@@ -11,10 +11,10 @@
 #define COLOR_BLUE "\x1b[34m"
 #define COLOR_RESET "\x1b[0m"
 
-#define db_host "sql.freedb.tech"
-#define db_user "freedb_ngocban"
-#define db_pass "mhuR&Je%kf&d@3f"
-#define db_name "freedb_network"
+#define db_host "localhost"
+#define db_user "network"
+#define db_pass "password"
+#define db_name "network"
 
 #define FN_SIGN_IN 0
 #define FN_SIGN_UP 1

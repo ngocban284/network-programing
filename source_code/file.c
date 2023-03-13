@@ -10,20 +10,20 @@ void upload_file(char *UserID, int new_socket)
 {
     ssize_t total = 0;
     printf(COLOR_BLUE "\n[+] Uploading ....." COLOR_RESET);
-    char *filename = malloc(BUFF_SIZE * sizeof(char));
+    char *filename = malloc(SIZE * sizeof(char));
     printf(COLOR_GREEN "\n[+] Enter filename : " COLOR_RESET);
     scanf("%[^\n]", filename);
     getchar();
     // printf("file name: %s\n", filename);
 
-    char *filepath = malloc(BUFF_SIZE * sizeof(char));
+    char *filepath = malloc(SIZE * sizeof(char));
     printf(COLOR_GREEN "\n[+] Enter destination : " COLOR_RESET);
     scanf("%[^\n]", filepath);
     getchar();
     // printf("Destination path : %s\n", filepath);
 
     char *name = basename(filename);
-    char request[BUFF_SIZE] = "";
+    char request[SIZE] = "";
 
     sprintf(request, "%s*%s/%s", UserID, filepath, name);
     // printf("token send: %s\n", request);
@@ -38,12 +38,12 @@ void upload_file(char *UserID, int new_socket)
     {
         printf("\n[+] File found !!\n");
 
-        if (send(new_socket, request, BUFF_SIZE, 0) == -1)
+        if (send(new_socket, request, SIZE, 0) == -1)
         {
             errorMsg("\n[-] Error sending file path ");
         }
         char conf[25];
-        if (read(new_socket, conf, BUFF_SIZE) == -1)
+        if (read(new_socket, conf, SIZE) == -1)
         {
             errorMsg("Couldn't receive confirmation message");
         }
@@ -84,12 +84,12 @@ void upload_file(char *UserID, int new_socket)
                         perror("write");
                     }
 
-                    char buffer[BUFF_SIZE] = "";
+                    char buffer[SIZE] = "";
 
                     // reading from file and sending to client
                     while (1)
                     {
-                        n = read(fp, buffer, BUFF_SIZE);
+                        n = read(fp, buffer, SIZE);
                         if (n == 0)
                             break;
                         if (n == -1)
@@ -108,8 +108,8 @@ void upload_file(char *UserID, int new_socket)
                         printf(COLOR_GREEN "\r%d %% upload. total %ld bytes" COLOR_RESET, percen, total);
                     }
                     close(fp);
-                    char respone[BUFF_SIZE] = {0};
-                    if (recv(new_socket, respone, BUFF_SIZE, 0) > 0)
+                    char respone[SIZE] = {0};
+                    if (recv(new_socket, respone, SIZE, 0) > 0)
                     {
                         printf("\n%s", respone);
                     }
@@ -127,10 +127,10 @@ void write_file(int sock)
     MYSQL *con;
     con = mysql_init(NULL);
 
-    char status[BUFF_SIZE] = "";
-    char buffer[BUFF_SIZE] = "";
-    char token[BUFF_SIZE] = "";
-    if (recv(sock, token, BUFF_SIZE, 0) == -1)
+    char status[SIZE] = "";
+    char buffer[SIZE] = "";
+    char token[SIZE] = "";
+    if (recv(sock, token, SIZE, 0) == -1)
     {
         errorMsg("error\n");
     }
@@ -145,7 +145,7 @@ void write_file(int sock)
         {
             ssize_t total = 0;
             ssize_t n = 0;
-            char temp[BUFF_SIZE];
+            char temp[SIZE];
             strcpy(temp, token);
 
             char *ID = strtok(token, "*");
@@ -154,25 +154,32 @@ void write_file(int sock)
             char *FolderID = get_folderid_via_foldername(con, foldername);
             char *UserID = strtok(temp, "*");
             char *filepath = strtok(NULL, "*");
+            printf("666\n");
             printf("UserID : %s \nSpaceID : %s\nfoldername: %s \nFolerID : %s\nfilepath: %s \n", ID, GID, foldername, FolderID, filepath);
-            char buff[BUFF_SIZE] = "";
+            printf("5555\n");
+            printf("%d\n", SIZE);
+            
+            char buff[SIZE] = "";
+            printf("%d\n", SIZE);
 
+            printf("1111");
             strncpy(buff, filepath, strlen(filepath));
-
+            printf("aaaa");
             // checking if the file exist or not
             int k = check_user_access(con, UserID, foldername);
             if (k == 0)
             {
                 char conf2[9] = "notallow";
-                char buf[BUFF_SIZE] = {0};
+                char buf[SIZE] = {0};
                 strncpy(buf, conf2, strlen(conf2));
-                if (send(sock, buf, BUFF_SIZE, 0) == -1)
+                if (send(sock, buf, SIZE, 0) == -1)
                 {
                     perror("Couldn't send file confirmation message.\n");
                 }
             }
             else
             {
+                printf("bbbb");
                 FILE *fd = fopen(filepath, "r");
                 if (fd != NULL)
                 {
@@ -180,6 +187,7 @@ void write_file(int sock)
                 }
                 else
                 {
+                    printf("cccc");
                     send(sock, "allow", strlen("allow"), 0);
                     // opening a file with needed filename
                     int fp = open(filepath, O_WRONLY | O_CREAT, 0777);
@@ -204,7 +212,7 @@ void write_file(int sock)
                         // block by block till all bytes are read
                         do
                         {
-                            n = read(sock, buffer, BUFF_SIZE);
+                            n = read(sock, buffer, SIZE);
 
                             if (n == -1)
                             {
@@ -218,6 +226,7 @@ void write_file(int sock)
                             }
                             // percentage of file downloaded
                             total += n;
+                            printf("sz: %d\n", sz);
                             int percen = (total * 100) / sz;
 
                             printf(COLOR_BLUE "\r%d %% received. total %ld bytes" COLOR_RESET, percen, total);
@@ -258,7 +267,7 @@ void write_file(int sock)
                         }
                         strcpy(status, "successfully \n");
                     }
-                    if (send(sock, status, BUFF_SIZE, 0) > 0)
+                    if (send(sock, status, SIZE, 0) > 0)
                     {
                         printf("status : %s", status);
                     }
@@ -274,8 +283,8 @@ void write_file(int sock)
 
 void download_file(char *UserID, int sock)
 {
-    // char respone[BUFF_SIZE] = {0};
-    char buffer[BUFF_SIZE] = {0};
+    // char respone[SIZE] = {0};
+    char buffer[SIZE] = {0};
     char *filepath = malloc(100 * sizeof(char));
     printf(COLOR_GREEN "Enter file path to download : " COLOR_RESET);
     scanf("%[^\n]", filepath);
@@ -284,9 +293,9 @@ void download_file(char *UserID, int sock)
     long int sz;
     
     ssize_t n = 0;
-    char request[BUFF_SIZE] = {0};
+    char request[SIZE] = {0};
     sprintf(request, "%s*%s", UserID, filepath);
-    char token[BUFF_SIZE] = {0};
+    char token[SIZE] = {0};
     strncpy(token, request, strlen(request));
     // printf("UserID : %s \nfilepath : %s\n", UserID, filepath);
     // printf("Token : %s\n", token);
@@ -300,14 +309,14 @@ void download_file(char *UserID, int sock)
     }
     else
     {
-        if (send(sock, token, BUFF_SIZE, 0) == -1)
+        if (send(sock, token, SIZE, 0) == -1)
         {
             perror("Couldn't send filename");
         }
         else
         {
             char conf[9] = {0};
-            if (read(sock, conf, BUFF_SIZE) == -1)
+            if (read(sock, conf, SIZE) == -1)
             {
                 perror("Couldn't receive confirmation message");
             }
@@ -322,7 +331,7 @@ void download_file(char *UserID, int sock)
                 else
                 {
                     char conf2[25] = "";
-                    if (read(sock, conf2, BUFF_SIZE) == -1)
+                    if (read(sock, conf2, SIZE) == -1)
                     {
                         perror("Couldn't receive confirmation message");
                     }
@@ -355,7 +364,7 @@ void download_file(char *UserID, int sock)
                         // block by block till all bytes are read
                         do
                         {
-                            n = read(sock, buffer, BUFF_SIZE);
+                            n = read(sock, buffer, SIZE);
 
                             if (n == -1)
                             {
@@ -397,8 +406,8 @@ void download_file(char *UserID, int sock)
 
 void remove_file(char *UserID, int sockfd)
 {
-    char buff[BUFF_SIZE] = {0};
-    char filename[BUFF_SIZE] = {0};
+    char buff[SIZE] = {0};
+    char filename[SIZE] = {0};
     printf(COLOR_GREEN "\n[+]Remove............." COLOR_RESET);
     printf(COLOR_GREEN "\n[+]Enter filename to remove : " COLOR_RESET);
     scanf("%[^\n]", filename);
@@ -407,12 +416,12 @@ void remove_file(char *UserID, int sockfd)
     char *sen = malloc(255 * sizeof(char));
     sprintf(sen, "%s*%s", UserID, filename);
     // printf("send token : %s", sen);
-    if (send(sockfd, sen, BUFF_SIZE, 0) == -1)
+    if (send(sockfd, sen, SIZE, 0) == -1)
     {
         errorMsg("?");
     }
 
-    if (recv(sockfd, buff, BUFF_SIZE, 0) == -1)
+    if (recv(sockfd, buff, SIZE, 0) == -1)
     {
         errorMsg("?");
     }
